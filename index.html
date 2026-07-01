@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FALCON01 · SMS Dashboard</title>
     <style>
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -16,11 +15,11 @@
             background: #0a0e14;
             color: #e6edf3;
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
         }
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
             background: #161b22;
@@ -46,19 +45,19 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
-            padding: 16px 24px;
+            padding: 12px 20px;
             background: #161b22;
-            border-radius: 16px;
+            border-radius: 12px;
             border: 1px solid #30363d;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
         .header-left {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
         .logo {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
             background: linear-gradient(135deg, #58a6ff, #3fb950);
             -webkit-background-clip: text;
@@ -66,41 +65,25 @@
             background-clip: text;
         }
         .logo-icon {
-            font-size: 32px;
-        }
-        .header-badges {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
+            font-size: 28px;
         }
         .badge {
             background: #21262d;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 13px;
+            padding: 3px 12px;
+            border-radius: 16px;
+            font-size: 12px;
             color: #8b949e;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .badge span {
             color: #f0f6fc;
             font-weight: 600;
         }
-        .badge .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .dot.green { background: #3fb950; }
-        .dot.yellow { background: #d29922; }
-        .dot.red { background: #f85149; }
-
         .header-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -108,9 +91,9 @@
             background: #238636;
             color: white;
             border: none;
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
@@ -131,18 +114,20 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .ws-status {
-            font-size: 12px;
-            padding: 4px 14px;
-            border-radius: 20px;
+            font-size: 11px;
+            padding: 3px 12px;
+            border-radius: 16px;
             background: #21262d;
             border: 1px solid #30363d;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .ws-status.online {
             color: #3fb950;
@@ -156,60 +141,50 @@
         /* ===== STATS BAR ===== */
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 12px;
-            margin-bottom: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
         }
         .stat-card {
             background: #161b22;
             border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 16px 20px;
+            border-radius: 10px;
+            padding: 12px 16px;
             transition: border-color 0.2s;
         }
-        .stat-card:hover {
-            border-color: #58a6ff;
-        }
         .stat-label {
-            font-size: 12px;
+            font-size: 10px;
             color: #8b949e;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
-            margin-top: 4px;
+            margin-top: 2px;
             color: #f0f6fc;
         }
-        .stat-value .trend {
-            font-size: 14px;
-            font-weight: 400;
-            margin-left: 8px;
-        }
-        .trend.up { color: #3fb950; }
-        .trend.down { color: #f85149; }
 
         /* ===== FILTERS ===== */
         .filters {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
-            padding: 16px 20px;
+            margin-bottom: 16px;
+            padding: 12px 16px;
             background: #161b22;
-            border-radius: 12px;
+            border-radius: 10px;
             border: 1px solid #30363d;
         }
         .filter-group {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             flex: 1;
-            min-width: 150px;
+            min-width: 140px;
         }
         .filter-group label {
-            font-size: 13px;
+            font-size: 12px;
             color: #8b949e;
             white-space: nowrap;
         }
@@ -218,9 +193,9 @@
             background: #0d1117;
             border: 1px solid #30363d;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 5px 10px;
             color: #e6edf3;
-            font-size: 13px;
+            font-size: 12px;
             width: 100%;
             transition: border-color 0.2s;
         }
@@ -229,91 +204,78 @@
             outline: none;
             border-color: #58a6ff;
         }
-        .filter-group input::placeholder {
-            color: #8b949e;
-        }
 
         /* ===== DEVICE GRID ===== */
         .devices-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
         }
         .device-card {
             background: #161b22;
             border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 16px;
             transition: all 0.2s;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
-        }
-        .device-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #58a6ff, #3fb950);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .device-card:hover::before {
-            opacity: 1;
         }
         .device-card:hover {
             border-color: #58a6ff;
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(88, 166, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(88, 166, 255, 0.08);
         }
         .device-card .device-top {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .device-id {
-            font-size: 11px;
+            font-size: 10px;
             color: #8b949e;
             font-family: monospace;
-            word-break: break-all;
             background: #0d1117;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 4px;
+            word-break: break-all;
+            max-width: 70%;
         }
         .device-status {
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 12px;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
             background: #21262d;
         }
-        .device-status.online { color: #3fb950; }
-        .device-status.offline { color: #8b949e; }
+        .device-status.online {
+            color: #3fb950;
+        }
+        .device-status.offline {
+            color: #8b949e;
+        }
 
         .device-model {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: #f0f6fc;
             margin-bottom: 2px;
         }
         .device-brand {
-            font-size: 14px;
+            font-size: 13px;
             color: #8b949e;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .device-numbers {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin: 8px 0 12px;
+            gap: 4px;
+            margin: 6px 0 10px;
         }
         .device-number {
             background: #1c2333;
-            padding: 2px 12px;
-            border-radius: 12px;
-            font-size: 12px;
+            padding: 2px 10px;
+            border-radius: 10px;
+            font-size: 11px;
             font-weight: 500;
             color: #58a6ff;
             font-family: monospace;
@@ -321,63 +283,55 @@
         }
         .device-stats {
             display: flex;
-            gap: 16px;
-            font-size: 13px;
+            gap: 12px;
+            font-size: 12px;
             color: #8b949e;
-            padding-top: 12px;
+            padding-top: 8px;
             border-top: 1px solid #21262d;
-        }
-        .device-stats span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
         .device-stats .count {
             color: #f0f6fc;
             font-weight: 600;
         }
-        .device-stats .emoji {
-            font-size: 16px;
-        }
 
         /* ===== LOADING ===== */
         .loading {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             color: #8b949e;
         }
         .spinner {
             display: inline-block;
-            width: 48px;
-            height: 48px;
-            border: 4px solid #21262d;
-            border-top: 4px solid #58a6ff;
+            width: 36px;
+            height: 36px;
+            border: 3px solid #21262d;
+            border-top: 3px solid #58a6ff;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         .no-data {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             color: #8b949e;
         }
         .no-data .icon {
-            font-size: 64px;
-            margin-bottom: 16px;
+            font-size: 48px;
+            margin-bottom: 12px;
             opacity: 0.3;
         }
 
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 24px;
+            bottom: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(100px);
+            transform: translateX(-50%) translateY(80px);
             background: #21262d;
             color: #f0f6fc;
-            padding: 12px 28px;
-            border-radius: 12px;
-            font-size: 14px;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-size: 13px;
             border: 1px solid #30363d;
             opacity: 0;
             transition: all 0.3s ease;
@@ -390,465 +344,590 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ===== CACHE INDICATOR ===== */
+        .cache-info {
+            font-size: 10px;
+            color: #8b949e;
+            padding: 4px 12px;
+            background: #0d1117;
+            border-radius: 4px;
+            border: 1px solid #21262d;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            body { padding: 12px; }
-            header { flex-direction: column; align-items: stretch; }
-            .header-left { justify-content: center; }
-            .header-actions { justify-content: center; }
-            .stats-bar { grid-template-columns: repeat(2, 1fr); }
-            .devices-grid { grid-template-columns: 1fr; }
-            .filters { flex-direction: column; }
-            .filter-group { min-width: unset; }
+            body {
+                padding: 10px;
+            }
+            header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header-left {
+                justify-content: center;
+            }
+            .header-actions {
+                justify-content: center;
+            }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .devices-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters {
+                flex-direction: column;
+            }
+            .filter-group {
+                min-width: unset;
+            }
         }
         @media (max-width: 480px) {
-            .stats-bar { grid-template-columns: 1fr; }
-            .logo { font-size: 20px; }
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+            .logo {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="toast" class="toast">✅ Copied!</div>
+    <div class="container">
+        <div id="toast" class="toast">✅ Done!</div>
 
-    <!-- ===== HEADER ===== -->
-    <header>
-        <div class="header-left">
-            <span class="logo-icon">📡</span>
-            <span class="logo">FALCON01</span>
-            <div class="header-badges">
-                <span class="badge">📱 <span id="deviceCount">0</span> devices</span>
-                <span class="badge">💬 <span id="totalSmsCount">0</span> messages</span>
-                <span class="badge"><span class="dot green" id="statusDot"></span> <span id="statusText">Live</span></span>
+        <!-- ===== HEADER ===== -->
+        <header>
+            <div class="header-left">
+                <span class="logo-icon">📡</span>
+                <span class="logo">FALCON01</span>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                    <span class="badge">📱 <span id="deviceCount">0</span></span>
+                    <span class="badge">💬 <span id="totalSmsCount">0</span></span>
+                    <span class="cache-info" id="cacheInfo">⚡ Cache</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span class="ws-status" id="wsStatus">⚡ connecting…</span>
+                <button class="refresh-btn" id="refreshBtn">
+                    <span class="icon">⟳</span> Refresh
+                </button>
+            </div>
+        </header>
+
+        <!-- ===== STATS ===== -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-label">Devices</div>
+                <div class="stat-value" id="statDevices">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total SMS</div>
+                <div class="stat-value" id="statSms">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Unique Numbers</div>
+                <div class="stat-value" id="statNumbers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Last Update</div>
+                <div class="stat-value" id="statLastUpdate" style="font-size:13px;">—</div>
             </div>
         </div>
-        <div class="header-actions">
-            <span class="ws-status" id="wsStatus">⚡ connecting…</span>
-            <button class="refresh-btn" id="refreshBtn">
-                <span class="icon">⟳</span> Refresh
-            </button>
-        </div>
-    </header>
 
-    <!-- ===== STATS ===== -->
-    <div class="stats-bar" id="statsBar">
-        <div class="stat-card">
-            <div class="stat-label">Total Devices</div>
-            <div class="stat-value" id="statDevices">0</div>
+        <!-- ===== FILTERS ===== -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>🔍</label>
+                <input type="text" id="searchInput" placeholder="Search devices..." />
+            </div>
+            <div class="filter-group">
+                <label>📊</label>
+                <select id="sortSelect">
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="mostSms">Most SMS</option>
+                    <option value="leastSms">Least SMS</option>
+                </select>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">Total SMS</div>
-            <div class="stat-value" id="statSms">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Unique Numbers</div>
-            <div class="stat-value" id="statNumbers">0</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Last Update</div>
-            <div class="stat-value" id="statLastUpdate" style="font-size:14px;">—</div>
-        </div>
-    </div>
 
-    <!-- ===== FILTERS ===== -->
-    <div class="filters">
-        <div class="filter-group">
-            <label>🔍 Search</label>
-            <input type="text" id="searchInput" placeholder="Model, brand, or number..." />
-        </div>
-        <div class="filter-group">
-            <label>📊 Sort</label>
-            <select id="sortSelect">
-                <option value="newest">Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="mostSms">Most SMS</option>
-                <option value="leastSms">Least SMS</option>
-            </select>
+        <!-- ===== LIST VIEW ===== -->
+        <div id="listView">
+            <div id="loadingIndicator" class="loading" style="display:none;">
+                <div class="spinner"></div>
+                <p>Loading devices...</p>
+            </div>
+            <div id="devicesGrid" class="devices-grid"></div>
+            <div id="noData" class="no-data" style="display:none;">
+                <div class="icon">📭</div>
+                <p>No devices found</p>
+            </div>
         </div>
     </div>
 
-    <!-- ===== LIST VIEW ===== -->
-    <div id="listView">
-        <div id="loadingIndicator" class="loading">
-            <div class="spinner"></div>
-            <p>Loading devices...</p>
-        </div>
-        <div id="devicesGrid" class="devices-grid" style="display:none;"></div>
-        <div id="noData" class="no-data" style="display:none;">
-            <div class="icon">📭</div>
-            <p>No devices found</p>
-            <p style="font-size:13px;margin-top:8px;">Try adjusting your filters</p>
-        </div>
-    </div>
-</div>
+    <script>
+        // ============================================================
+        // ULTRA-FAST VERSION WITH CACHING & LAZY LOADING
+        // ============================================================
+        const DB_URL = 'https://fortydata-fee65-default-rtdb.firebaseio.com/admin/FALCON01/users.json';
+        const WS_URL = 'wss://echo.websocket.org';
+        const CACHE_KEY = 'falcon01_cache';
+        const CACHE_DURATION = 30000; // 30 seconds
+        const MAX_SMS_TO_SHOW = 15; // Only show last 15 SMS
 
-<script>
-    // ============================================================
-    // CONFIGURATION
-    // ============================================================
-    const DB_URL = 'https://fortydata-fee65-default-rtdb.firebaseio.com/admin/FALCON01/users.json';
-    const WS_URL = 'wss://echo.websocket.org'; // Replace with your WS endpoint
+        // ============================================================
+        // STATE
+        // ============================================================
+        let devices = [];
+        let filteredDevices = [];
+        let isFirstLoad = true;
+        let ws = null;
+        let reconnectTimer = null;
+        let lastUpdate = null;
+        let isLoading = false;
 
-    // ============================================================
-    // STATE
-    // ============================================================
-    let devices = [];
-    let filteredDevices = [];
-    let currentDeviceId = null;
-    let ws = null;
-    let reconnectTimer = null;
-    let lastUpdate = null;
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const $ = (s) => document.querySelector(s);
+        const grid = $('#devicesGrid');
+        const loading = $('#loadingIndicator');
+        const noData = $('#noData');
+        const deviceCount = $('#deviceCount');
+        const totalSmsCount = $('#totalSmsCount');
+        const statDevices = $('#statDevices');
+        const statSms = $('#statSms');
+        const statNumbers = $('#statNumbers');
+        const statLastUpdate = $('#statLastUpdate');
+        const searchInput = $('#searchInput');
+        const sortSelect = $('#sortSelect');
+        const refreshBtn = $('#refreshBtn');
+        const wsStatus = $('#wsStatus');
+        const cacheInfo = $('#cacheInfo');
+        const toast = $('#toast');
 
-    // ============================================================
-    // DOM REFS
-    // ============================================================
-    const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => document.querySelectorAll(sel);
+        // ============================================================
+        // CACHE HELPERS
+        // ============================================================
+        function getCache() {
+            try {
+                const data = localStorage.getItem(CACHE_KEY);
+                if (data) {
+                    const parsed = JSON.parse(data);
+                    if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_DURATION) {
+                        return parsed.devices;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+            return null;
+        }
 
-    const grid = $('#devicesGrid');
-    const loading = $('#loadingIndicator');
-    const noData = $('#noData');
-    const deviceCount = $('#deviceCount');
-    const totalSmsCount = $('#totalSmsCount');
-    const statDevices = $('#statDevices');
-    const statSms = $('#statSms');
-    const statNumbers = $('#statNumbers');
-    const statLastUpdate = $('#statLastUpdate');
-    const searchInput = $('#searchInput');
-    const sortSelect = $('#sortSelect');
-    const refreshBtn = $('#refreshBtn');
-    const wsStatus = $('#wsStatus');
-    const statusDot = $('#statusDot');
-    const statusText = $('#statusText');
-    const toast = $('#toast');
+        function setCache(devices) {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    devices: devices,
+                    timestamp: Date.now()
+                }));
+            } catch (e) { /* ignore */ }
+        }
 
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    function formatTimestamp(ts) {
-        if (!ts) return '—';
-        const d = new Date(ts);
-        return d.toLocaleString('en-IN', {
-            day: '2-digit', month: 'short', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-            hour12: true
-        });
-    }
+        // ============================================================
+        // HELPERS
+        // ============================================================
+        function formatTimestamp(ts) {
+            if (!ts) return '—';
+            const d = new Date(ts);
+            return d.toLocaleString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
 
-    function extractNumbers(simInfo) {
-        const nums = new Set();
-        if (!simInfo) return [];
-        ['sim1', 'sim2'].forEach(slot => {
-            const sim = simInfo[slot];
-            if (sim?.number) {
-                let n = sim.number.trim().replace(/^\+?91/, '');
+        function extractNumbers(simInfo) {
+            const nums = new Set();
+            if (!simInfo) return [];
+            ['sim1', 'sim2'].forEach(slot => {
+                const sim = simInfo[slot];
+                if (sim?.number) {
+                    let n = sim.number.trim().replace(/^\+?91/, '');
+                    if (n) nums.add(n);
+                }
+            });
+            if (simInfo.number) {
+                let n = simInfo.number.trim().replace(/^\+?91/, '');
                 if (n) nums.add(n);
             }
-        });
-        if (simInfo.number) {
-            let n = simInfo.number.trim().replace(/^\+?91/, '');
-            if (n) nums.add(n);
+            return Array.from(nums);
         }
-        return Array.from(nums);
-    }
 
-    function getMessageCount(userData) {
-        return userData.receivedSms ? Object.keys(userData.receivedSms).length : 0;
-    }
+        function getMessageCount(userData) {
+            return userData.receivedSms ? Object.keys(userData.receivedSms).length : 0;
+        }
 
-    function getLatestMessage(userData) {
-        if (!userData.receivedSms) return null;
-        const msgs = Object.values(userData.receivedSms);
-        if (msgs.length === 0) return null;
-        return msgs.reduce((a, b) => (a.timestamp || 0) > (b.timestamp || 0) ? a : b);
-    }
-
-    function escapeHtml(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    function showToast(msg, type = 'success') {
-        toast.textContent = msg;
-        toast.className = 'toast show';
-        clearTimeout(toast._timer);
-        toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
-    }
-
-    function copyToClipboard(text, btn) {
-        navigator.clipboard?.writeText(text).then(() => {
-            showToast('✅ Copied: ' + text);
-            if (btn) {
-                btn.textContent = '✅';
-                setTimeout(() => btn.textContent = '📋', 1000);
+        // Only get last N messages for display
+        function getLastMessages(userData, limit = MAX_SMS_TO_SHOW) {
+            if (!userData.receivedSms) return [];
+            const msgs = [];
+            for (const [key, sms] of Object.entries(userData.receivedSms)) {
+                msgs.push({ id: key, ...sms });
             }
-        }).catch(() => {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
-            showToast('✅ Copied: ' + text);
-        });
-    }
+            msgs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            return msgs.slice(0, limit);
+        }
 
-    // ============================================================
-    // FETCH DATA
-    // ============================================================
-    async function fetchData() {
-        refreshBtn.disabled = true;
-        refreshBtn.classList.add('spinning');
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
 
-        try {
-            const resp = await fetch(DB_URL);
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            const data = await resp.json();
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 1500);
+        }
 
-            const newDevices = [];
-            if (data && typeof data === 'object') {
-                for (const id of Object.keys(data)) {
-                    const user = data[id];
-                    if (user?.deviceInfo) {
-                        newDevices.push({
-                            id,
-                            data: user,
-                            msgCount: getMessageCount(user),
-                            numbers: extractNumbers(user.simInfo),
-                            latestMsg: getLatestMessage(user)
-                        });
-                    }
+        // ============================================================
+        // FETCH DATA - WITH CACHING
+        // ============================================================
+        async function fetchData(force = false) {
+            if (isLoading) return;
+            isLoading = true;
+
+            // Check cache first
+            if (!force) {
+                const cached = getCache();
+                if (cached && cached.length > 0) {
+                    devices = cached;
+                    applyFiltersAndRender();
+                    updateStats();
+                    cacheInfo.textContent = '📦 Cache';
+                    cacheInfo.style.color = '#3fb950';
+                    isLoading = false;
+                    // Still fetch in background
+                    fetchData(true);
+                    return;
                 }
             }
 
-            // Sort by newest first
-            newDevices.sort((a, b) => (b.data.userCreated || 0) - (a.data.userCreated || 0));
-            devices = newDevices;
-            lastUpdate = Date.now();
-
-            applyFiltersAndRender();
-
-        } catch (err) {
-            console.error('Fetch error:', err);
-            showToast('❌ Error loading data: ' + err.message);
-            grid.style.display = 'block';
-            grid.innerHTML = `
-                <div style="grid-column:1/-1; text-align:center; padding:60px; color:#f85149;">
-                    <p style="font-size:20px;">⚠️ Failed to load</p>
-                    <p style="color:#8b949e; margin-top:8px;">${err.message}</p>
-                    <button onclick="fetchData()" style="margin-top:16px;padding:8px 24px;background:#238636;color:white;border:none;border-radius:6px;cursor:pointer;">Retry</button>
-                </div>
-            `;
-        } finally {
-            refreshBtn.disabled = false;
-            refreshBtn.classList.remove('spinning');
-            loading.style.display = 'none';
-        }
-    }
-
-    // ============================================================
-    // FILTERS & SORTING
-    // ============================================================
-    function applyFiltersAndRender() {
-        const search = searchInput.value.toLowerCase().trim();
-        const sort = sortSelect.value;
-
-        filteredDevices = devices.filter(dev => {
-            if (!search) return true;
-            const model = (dev.data.deviceInfo?.model || '').toLowerCase();
-            const brand = (dev.data.deviceInfo?.brand || '').toLowerCase();
-            const numbers = dev.numbers.join(' ').toLowerCase();
-            const id = dev.id.toLowerCase();
-            return model.includes(search) || brand.includes(search) || numbers.includes(search) || id.includes(search);
-        });
-
-        // Sort
-        filteredDevices.sort((a, b) => {
-            switch (sort) {
-                case 'newest':
-                    return (b.data.userCreated || 0) - (a.data.userCreated || 0);
-                case 'oldest':
-                    return (a.data.userCreated || 0) - (b.data.userCreated || 0);
-                case 'mostSms':
-                    return b.msgCount - a.msgCount;
-                case 'leastSms':
-                    return a.msgCount - b.msgCount;
-                default:
-                    return 0;
+            // Show loading only on first load
+            if (isFirstLoad) {
+                loading.style.display = 'block';
+                grid.style.display = 'none';
             }
-        });
 
-        renderList();
-        updateStats();
-    }
+            refreshBtn.disabled = true;
+            refreshBtn.classList.add('spinning');
 
-    // ============================================================
-    // RENDER LIST
-    // ============================================================
-    function renderList() {
-        if (filteredDevices.length === 0) {
-            grid.style.display = 'none';
-            noData.style.display = 'block';
-            return;
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                const resp = await fetch(DB_URL, {
+                    signal: controller.signal,
+                    headers: {
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const data = await resp.json();
+
+                const newDevices = [];
+                if (data && typeof data === 'object') {
+                    const keys = Object.keys(data);
+                    // Process in chunks to avoid blocking UI
+                    const chunkSize = 10;
+                    for (let i = 0; i < keys.length; i += chunkSize) {
+                        const chunk = keys.slice(i, i + chunkSize);
+                        for (const id of chunk) {
+                            const user = data[id];
+                            if (user?.deviceInfo) {
+                                newDevices.push({
+                                    id,
+                                    data: user,
+                                    msgCount: getMessageCount(user),
+                                    numbers: extractNumbers(user.simInfo),
+                                    // Only store last 15 messages for display
+                                    recentMessages: getLastMessages(user)
+                                });
+                            }
+                        }
+                        // Yield to UI
+                        await new Promise(r => setTimeout(r, 0));
+                    }
+                }
+
+                // Sort by newest
+                newDevices.sort((a, b) => (b.data.userCreated || 0) - (a.data.userCreated || 0));
+                devices = newDevices;
+                lastUpdate = Date.now();
+
+                // Save to cache
+                setCache(devices);
+                cacheInfo.textContent = '💾 Saved';
+                cacheInfo.style.color = '#58a6ff';
+
+                applyFiltersAndRender();
+                updateStats();
+
+                if (isFirstLoad) {
+                    isFirstLoad = false;
+                }
+
+            } catch (err) {
+                console.error('Fetch error:', err);
+                if (!getCache()) {
+                    grid.style.display = 'block';
+                    grid.innerHTML = `
+                        <div style="grid-column:1/-1; text-align:center; padding:40px; color:#f85149;">
+                            <p style="font-size:16px;">⚠️ Failed to load</p>
+                            <p style="color:#8b949e; font-size:13px; margin-top:6px;">${err.message}</p>
+                            <button onclick="fetchData(true)" style="margin-top:12px;padding:6px 20px;background:#238636;color:white;border:none;border-radius:6px;cursor:pointer;">Retry</button>
+                        </div>
+                    `;
+                }
+                showToast('❌ Error: ' + err.message);
+            } finally {
+                isLoading = false;
+                refreshBtn.disabled = false;
+                refreshBtn.classList.remove('spinning');
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
+            }
         }
 
-        grid.style.display = 'grid';
-        noData.style.display = 'none';
+        // ============================================================
+        // FILTERS & SORTING
+        // ============================================================
+        function applyFiltersAndRender() {
+            const search = searchInput.value.toLowerCase().trim();
+            const sort = sortSelect.value;
 
-        let html = '';
-        for (const dev of filteredDevices) {
-            const info = dev.data.deviceInfo || {};
-            const model = info.model || 'Unknown';
-            const brand = info.brand || info.manufacturer || '';
-            const numbers = dev.numbers;
-            const msgCount = dev.msgCount;
-            const latest = dev.latestMsg;
-            const status = dev.data.online ? 'online' : 'offline';
+            filteredDevices = devices.filter(dev => {
+                if (!search) return true;
+                const model = (dev.data.deviceInfo?.model || '').toLowerCase();
+                const brand = (dev.data.deviceInfo?.brand || '').toLowerCase();
+                const numbers = dev.numbers.join(' ').toLowerCase();
+                const id = dev.id.toLowerCase();
+                return model.includes(search) || brand.includes(search) || numbers.includes(search) || id.includes(search);
+            });
 
-            html += `
-                <div class="device-card" data-deviceid="${dev.id}" onclick="navigateToDetail('${dev.id}')">
+            // Sort
+            filteredDevices.sort((a, b) => {
+                switch (sort) {
+                    case 'newest':
+                        return (b.data.userCreated || 0) - (a.data.userCreated || 0);
+                    case 'oldest':
+                        return (a.data.userCreated || 0) - (b.data.userCreated || 0);
+                    case 'mostSms':
+                        return b.msgCount - a.msgCount;
+                    case 'leastSms':
+                        return a.msgCount - b.msgCount;
+                    default:
+                        return 0;
+                }
+            });
+
+            renderList();
+        }
+
+        // ============================================================
+        // RENDER LIST - With last 15 SMS preview
+        // ============================================================
+        function renderList() {
+            if (filteredDevices.length === 0) {
+                grid.style.display = 'none';
+                noData.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noData.style.display = 'none';
+
+            const fragment = document.createDocumentFragment();
+
+            for (const dev of filteredDevices) {
+                const info = dev.data.deviceInfo || {};
+                const model = info.model || 'Unknown';
+                const brand = info.brand || info.manufacturer || '';
+                const numbers = dev.numbers;
+                const msgCount = dev.msgCount;
+                const status = dev.data.online ? 'online' : 'offline';
+                const recentMsgs = dev.recentMessages || [];
+                const hasRecent = recentMsgs.length > 0;
+
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                card.setAttribute('data-deviceid', dev.id);
+                card.innerHTML = `
                     <div class="device-top">
-                        <span class="device-id">${dev.id.slice(0, 16)}${dev.id.length > 16 ? '…' : ''}</span>
-                        <span class="device-status ${status}">${status === 'online' ? '🟢 Online' : '⚪ Offline'}</span>
+                        <span class="device-id">${dev.id.slice(0, 14)}${dev.id.length > 14 ? '…' : ''}</span>
+                        <span class="device-status ${status}">${status === 'online' ? '● Online' : '○ Offline'}</span>
                     </div>
                     <div class="device-model">${escapeHtml(model)}</div>
                     <div class="device-brand">${escapeHtml(brand)}</div>
                     <div class="device-numbers">
                         ${numbers.map(n => `<span class="device-number">${n}</span>`).join('')}
-                        ${numbers.length === 0 ? '<span style="color:#8b949e;font-size:12px;">No numbers</span>' : ''}
+                        ${numbers.length === 0 ? '<span style="color:#8b949e;font-size:11px;">No numbers</span>' : ''}
                     </div>
                     <div class="device-stats">
-                        <span>💬 <span class="count">${msgCount}</span> SMS</span>
-                        ${latest ? `<span>📨 ${formatTimestamp(latest.timestamp)}</span>` : ''}
+                        <span>💬 <span class="count">${msgCount}</span></span>
+                        ${hasRecent ? `<span>📨 ${formatTimestamp(recentMsgs[0].timestamp)}</span>` : ''}
                     </div>
-                </div>
-            `;
+                    ${hasRecent ? `
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #21262d;font-size:11px;color:#8b949e;">
+                            <div style="font-weight:500;margin-bottom:4px;">Latest: ${escapeHtml(recentMsgs[0].sender || 'Unknown')}</div>
+                            <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(recentMsgs[0].message || '').substring(0, 60)}${(recentMsgs[0].message || '').length > 60 ? '…' : ''}</div>
+                        </div>
+                    ` : ''}
+                `;
+
+                card.addEventListener('click', () => {
+                    // Navigate to device detail in SAME tab
+                    window.location.href = `device-sms.html?id=${dev.id}`;
+                });
+
+                fragment.appendChild(card);
+            }
+
+            grid.innerHTML = '';
+            grid.appendChild(fragment);
+
+            deviceCount.textContent = filteredDevices.length;
         }
 
-        grid.innerHTML = html;
-        deviceCount.textContent = filteredDevices.length;
-    }
+        // ============================================================
+        // UPDATE STATS
+        // ============================================================
+        function updateStats() {
+            const totalDevices = devices.length;
+            const totalSms = devices.reduce((sum, d) => sum + d.msgCount, 0);
+            const uniqueNumbers = new Set();
+            devices.forEach(d => d.numbers.forEach(n => uniqueNumbers.add(n)));
 
-    // ============================================================
-    // UPDATE STATS
-    // ============================================================
-    function updateStats() {
-        const totalDevices = devices.length;
-        const totalSms = devices.reduce((sum, d) => sum + d.msgCount, 0);
-        const uniqueNumbers = new Set();
-        devices.forEach(d => d.numbers.forEach(n => uniqueNumbers.add(n)));
+            statDevices.textContent = totalDevices;
+            statSms.textContent = totalSms;
+            statNumbers.textContent = uniqueNumbers.size;
+            statLastUpdate.textContent = lastUpdate ? formatTimestamp(lastUpdate) : '—';
+            totalSmsCount.textContent = totalSms;
+            deviceCount.textContent = totalDevices;
+        }
 
-        statDevices.textContent = totalDevices;
-        statSms.textContent = totalSms;
-        statNumbers.textContent = uniqueNumbers.size;
-        statLastUpdate.textContent = lastUpdate ? formatTimestamp(lastUpdate) : '—';
-        totalSmsCount.textContent = totalSms;
-    }
+        // ============================================================
+        // WEBSOCKET - Optimized
+        // ============================================================
+        function connectWebSocket() {
+            if (ws?.readyState === WebSocket.OPEN || ws?.readyState === WebSocket.CONNECTING) return;
 
-    // ============================================================
-    // NAVIGATION
-    // ============================================================
-    function navigateToDetail(deviceId) {
-        // Open in new tab or navigate to device-sms.html
-        window.open(`device-sms.html?id=${deviceId}`, '_blank');
-    }
+            try {
+                ws = new WebSocket(WS_URL);
 
-    // ============================================================
-    // WEBSOCKET
-    // ============================================================
-    function connectWebSocket() {
-        if (ws?.readyState === WebSocket.OPEN || ws?.readyState === WebSocket.CONNECTING) return;
-
-        try {
-            ws = new WebSocket(WS_URL);
-
-            ws.onopen = () => {
-                wsStatus.textContent = '🟢 Live';
-                wsStatus.className = 'ws-status online';
-                statusDot.className = 'dot green';
-                statusText.textContent = 'Live';
-                if (ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({ action: 'subscribe', channel: 'FALCON01' }));
-                }
-            };
-
-            ws.onmessage = (event) => {
-                try {
-                    const payload = JSON.parse(event.data);
-                    if (payload?.deviceId && payload?.sms) {
-                        handleNewSms(payload.deviceId, payload.sms);
+                ws.onopen = () => {
+                    wsStatus.textContent = '🟢 Live';
+                    wsStatus.className = 'ws-status online';
+                    if (ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify({ action: 'subscribe', channel: 'FALCON01' }));
                     }
-                } catch (e) { /* ignore non-JSON */ }
-            };
+                };
 
-            ws.onclose = () => {
-                wsStatus.textContent = '🔴 Offline';
-                wsStatus.className = 'ws-status offline';
-                statusDot.className = 'dot red';
-                statusText.textContent = 'Offline';
+                ws.onmessage = (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        if (payload?.deviceId && payload?.sms) {
+                            handleNewSms(payload.deviceId, payload.sms);
+                        }
+                    } catch (e) { /* ignore */ }
+                };
+
+                ws.onclose = () => {
+                    wsStatus.textContent = '🔴 Offline';
+                    wsStatus.className = 'ws-status offline';
+                    clearTimeout(reconnectTimer);
+                    reconnectTimer = setTimeout(connectWebSocket, 3000);
+                };
+
+                ws.onerror = () => ws.close();
+            } catch (e) {
                 clearTimeout(reconnectTimer);
                 reconnectTimer = setTimeout(connectWebSocket, 3000);
+            }
+        }
+
+        function handleNewSms(deviceId, smsData) {
+            const dev = devices.find(d => d.id === deviceId);
+            if (!dev) return;
+
+            // Update data
+            if (!dev.data.receivedSms) dev.data.receivedSms = {};
+            const newId = 'ws_' + Date.now();
+            dev.data.receivedSms[newId] = {
+                sender: smsData.sender || 'Unknown',
+                message: smsData.message || '',
+                timestamp: smsData.timestamp || Date.now()
             };
 
-            ws.onerror = () => ws.close();
-        } catch (e) {
-            clearTimeout(reconnectTimer);
-            reconnectTimer = setTimeout(connectWebSocket, 3000);
+            dev.msgCount = getMessageCount(dev.data);
+            // Update recent messages (keep only last 15)
+            dev.recentMessages = getLastMessages(dev.data);
+
+            // Re-apply filters
+            applyFiltersAndRender();
+            updateStats();
+            setCache(devices);
+
+            showToast(`📩 New SMS from ${smsData.sender || 'Unknown'}`);
         }
-    }
 
-    function handleNewSms(deviceId, smsData) {
-        const dev = devices.find(d => d.id === deviceId);
-        if (!dev) return;
+        // ============================================================
+        // EVENT LISTENERS
+        // ============================================================
+        searchInput.addEventListener('input', () => applyFiltersAndRender());
+        sortSelect.addEventListener('change', () => applyFiltersAndRender());
 
-        // Update data
-        if (!dev.data.receivedSms) dev.data.receivedSms = {};
-        const newId = 'ws_' + Date.now();
-        dev.data.receivedSms[newId] = {
-            sender: smsData.sender || 'Unknown',
-            message: smsData.message || '',
-            timestamp: smsData.timestamp || Date.now()
-        };
+        refreshBtn.addEventListener('click', () => {
+            fetchData(true);
+        });
 
-        // Update derived fields
-        dev.msgCount = getMessageCount(dev.data);
-        dev.latestMsg = getLatestMessage(dev.data);
+        // ============================================================
+        // BACKGROUND REFRESH
+        // ============================================================
+        setInterval(() => {
+            if (!document.hidden) {
+                fetchData(true);
+            }
+        }, 30000);
 
-        // Re-apply filters and render
-        applyFiltersAndRender();
-
-        // Show notification
-        showToast(`📩 New SMS from ${smsData.sender || 'Unknown'} on ${dev.data.deviceInfo?.model || 'device'}`);
-    }
-
-    // ============================================================
-    // EVENT LISTENERS
-    // ============================================================
-    searchInput.addEventListener('input', () => applyFiltersAndRender());
-    sortSelect.addEventListener('change', () => applyFiltersAndRender());
-
-    refreshBtn.addEventListener('click', () => {
-        fetchData();
-    });
-
-    // ============================================================
-    // AUTO-REFRESH
-    // ============================================================
-    setInterval(() => {
-        if (!document.hidden) {
-            fetchData();
+        // ============================================================
+        // INIT
+        // ============================================================
+        const cached = getCache();
+        if (cached && cached.length > 0) {
+            devices = cached;
+            applyFiltersAndRender();
+            updateStats();
+            cacheInfo.textContent = '📦 Cache';
+            cacheInfo.style.color = '#3fb950';
+            isFirstLoad = false;
         }
-    }, 30000); // Every 30 seconds
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    fetchData().then(() => {
-        connectWebSocket();
-    });
-</script>
+        fetchData().then(() => {
+            connectWebSocket();
+        });
+
+        console.log('⚡ FALCON01 loaded - Only loading last 15 SMS per device');
+        console.log(`📱 ${devices.length} devices cached`);
+    </script>
 </body>
 </html>
